@@ -15,19 +15,19 @@ const byte minuteTens[]  = {61,52,53,54,55,56,57,58,59,60};
 const byte minuteUnits[] = {9,0,1,2,3,4,5,6,7,8};
 const byte secondTens[]  = {19,10,11,12,13,14,15,16,17,18};
 const byte secondUnits[] = {29,20,21,22,23,24,25,26,27,28};
-// Not in use: positions 0 and 43
 
 class NixieDisplay {
   public:
     NixieDisplay();
     void begin();
     void enableSegment(byte segment);
-    void disableSegments(const byte segments[], int count);
-    void disableAllSegments();
+    void enableSegments(byte tube, byte segment);
     void disableSegment(byte segment);
+    void disableSegments(const byte segments[], int count);
+    void enableAllDots();
+    void disableAllSegments();
     void updateDisplay();
     void runSlotMachine();
-    void runSlotMachine2();
   private: 
     // Frame of data to be shifted into 64 bit HV shift register
     byte _frame[8]; // 8 bytes = 64 bits = 6 digits @ 10 bits + 2 dots @ 1 bit + 2 unused bits

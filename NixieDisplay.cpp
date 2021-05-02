@@ -34,6 +34,29 @@ void NixieDisplay::enableSegment(byte segment) {
   _frame[f] |= 1 << b;
 }
 
+void NixieDisplay::enableSegments(byte tube, byte segment) {
+  switch (tube) {
+    case 1:
+      enableSegment(hourTens[segment]);
+      break;
+    case 2:
+      enableSegment(hourUnits[segment]);
+      break;
+    case 3:
+      enableSegment(minuteTens[segment]);
+      break;
+    case 4:
+      enableSegment(minuteUnits[segment]);
+      break;
+    case 5:
+      enableSegment(secondTens[segment]);
+      break;
+    case 6:
+      enableSegment(secondUnits[segment]);
+      break;
+  }
+}
+
 void NixieDisplay::disableSegments(const byte segments[], int count) {
   for(int i = 0; i < count; ++i) {
     byte segment = segments[i];
@@ -53,6 +76,15 @@ void NixieDisplay::disableSegment(byte segment) {
   _frame[f] &= ~(1 << b);  
 }
 
+void NixieDisplay::enableAllDots() {
+  enableSegment(dotOne);
+  enableSegment(dotTwo);
+  enableSegment(dotFive);
+  enableSegment(dotSix);
+  digitalWrite(PIN_DOT_THREE, HIGH);
+  digitalWrite(PIN_DOT_FOUR, HIGH);
+}
+
 void NixieDisplay::updateDisplay() {
   digitalWrite(PIN_HV_LE, LOW);
   for(int i = 0; i < 8; ++i) {
@@ -62,37 +94,53 @@ void NixieDisplay::updateDisplay() {
 }
 
 void NixieDisplay::runSlotMachine() {
-  for (int j = 0; j < 1; ++j) {
-    for (int i = 0; i < 10; ++i) {
-      disableAllSegments();
-      enableSegment(hourTens[i]);
-      enableSegment(hourUnits[i]);
-      enableSegment(minuteTens[i]);
-      enableSegment(minuteUnits[i]);
-      enableSegment(secondTens[i]);
-      enableSegment(secondUnits[i]);
-      enableSegment(dotOne);
-      enableSegment(dotTwo);
-      enableSegment(dotFive);
-      enableSegment(dotSix);
-      digitalWrite(PIN_DOT_THREE, HIGH);
-      digitalWrite(PIN_DOT_FOUR, HIGH);
-      updateDisplay();
-      delay(250);
-    }
-  }
-  disableAllSegments();
-  digitalWrite(PIN_DOT_THREE, LOW);
-  digitalWrite(PIN_DOT_FOUR, LOW);
-}
 
-void NixieDisplay::runSlotMachine2() {
-  for (int j = 0; j < 5; ++j) {
-    for (int i = 0; i < 10; ++i) {
+  switch(random(3)) {
+    case 0:
+      for (int j = 0; j < 1; ++j) {
+        for (int i = 0; i < 10; ++i) {
+          disableAllSegments();
+          for (byte x = 1; x <= 6; ++x) {
+            enableSegments(x, i);
+          }
+          enableAllDots();
+          updateDisplay();
+          delay(250);
+        }
+      }
       disableAllSegments();
-      enableSegment(minuteUnits[i]);
+      digitalWrite(PIN_DOT_THREE, LOW);
+      digitalWrite(PIN_DOT_FOUR, LOW);
+      break;
+    case 1:
+      for (int x = 1; x <= 6; ++x) {
+        for (int i = 0; i < 10; ++i) {
+          disableAllSegments();
+          enableSegments(x, i);
+          enableAllDots();
+          updateDisplay();
+          delay(50);
+        }
+      }
+      disableAllSegments();
+      digitalWrite(PIN_DOT_THREE, LOW);
+      digitalWrite(PIN_DOT_FOUR, LOW);
       updateDisplay();
-      delay(500);
-    }
+      break;
+    case 2:
+      for (int x = 6; x >= 0; --x) {
+        for (int i = 0; i < 10; ++i) {
+          disableAllSegments();
+          enableSegments(x, i);
+          enableAllDots();
+          updateDisplay();
+          delay(50);
+        }
+      }
+      disableAllSegments();
+      digitalWrite(PIN_DOT_THREE, LOW);
+      digitalWrite(PIN_DOT_FOUR, LOW);
+      updateDisplay();
+      break;
   }
 }

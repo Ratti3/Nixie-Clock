@@ -1,23 +1,16 @@
-/*
-  // Fade Out
-  for(uint8_t i = 255; i != 0; i -= 1){
-    analogWrite(PIN_HV_BL,i);
-    analogWrite(PIN_DOT_THREE, i);
-    analogWrite(PIN_DOT_FOUR, i);
-      analogWrite(PIN_COLON, i);
-    delay(40);
-  }
+#ifndef Fade_h
+#define Fade_h
 
-  // Fade In
-  for(uint8_t i = 0; i != 255; i +=1 ){
-    analogWrite(PIN_HV_BL, i);
-    analogWrite(PIN_DOT_THREE, i);
-    analogWrite(PIN_DOT_FOUR, i);
-    analogWrite(PIN_COLON, i);
-    delay(40);
-  }
-  
-  digitalWrite(PIN_HV_EN, LOW);
-  delay(1000);
+#include "Arduino.h"
+#include "Globals.h"
 
-*/
+class Fade {
+  public:
+    Fade();
+    void fadeIn();
+    void fadeOut();
+    void setBrightness();
+  private:
+};
+
+#endif

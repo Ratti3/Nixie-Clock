@@ -73,7 +73,7 @@ int s = 88;
   if (s % 2 == 0) {
     analogWrite(PIN_COLON, 0);
   } else {
-    analogWrite(PIN_COLON, 150);
+    analogWrite(PIN_COLON, 100);
   }
 
   // Write to display

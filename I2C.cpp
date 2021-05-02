@@ -8,8 +8,7 @@ I2C::I2C(NixieDisplay* nixie, RTC_DS3231* rtc, Adafruit_BME280* bme, Adafruit_VE
   _settings = settings;
 }
 
-void I2C::begin() {
-
+void I2C::rtcBegin() {
   Wire.begin();
 
   // Start the DS3231 RTC
@@ -18,7 +17,9 @@ void I2C::begin() {
   } else {
     _settings->I2C_CODE[0] = 0;
   }
+}
 
+void I2C::bmeBegin() {
   // Start the BME280 Environmental Sensor with address of 0x76
   if (!_bme->begin(0x76)) {
     _settings->I2C_CODE[1] = 1;
@@ -31,7 +32,9 @@ void I2C::begin() {
   } else {
     _settings->I2C_CODE[1] = 0;
   }
+}
 
+void I2C::vemlBegin() {
   // Start the VEML7700 light sensor
   if (!_veml->begin()) {
     _settings->I2C_CODE[2] = 1;
@@ -41,7 +44,6 @@ void I2C::begin() {
 
   // Set the BS612 PIR pin to input
   pinMode(PIN_PIR, INPUT);
-
 }
 
 void I2C::displayTHP() {

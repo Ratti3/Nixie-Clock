@@ -10,7 +10,9 @@
 class I2C {
   public:
     I2C(NixieDisplay* nixie, RTC_DS3231* rtc, Adafruit_BME280* bme, Adafruit_VEML7700* veml, Settings* settings);
-    void begin();
+    void rtcBegin();
+    void bmeBegin();
+    void vemlBegin();
     void readTime();
     void readDate();
     void adjustTime(unsigned long epoch);

@@ -1,2 +1,2 @@
-#define WIFI_SSID "SSID"
-#define WIFI_PASS "PASS"
+#define WIFI_AP_SSID "NixieClock"
+#define WIFI_AP_PASS "nixieclock"
