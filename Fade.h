@@ -3,14 +3,16 @@
 
 #include "Arduino.h"
 #include "Globals.h"
+#include "Settings.h"
 
 class Fade {
   public:
-    Fade();
+    Fade(Settings* settings);
     void fadeIn();
     void fadeOut();
     void setBrightness();
   private:
+    Settings* _settings;
 };
 
 #endif

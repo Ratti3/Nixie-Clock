@@ -9,10 +9,11 @@
 #include "TimeTask.h"
 #include "Secrets.h"
 #include "Fade.h"
+#include "HV.h"
 
 class WiFiTask {
   public:
-    WiFiTask(NixieDisplay* nixie, TimeTask* timetask, I2C* i2c, NTPClient* timeclient, WiFiServer* server, Settings* settings, Fade* fade);
+    WiFiTask(NixieDisplay* nixie, TimeTask* timetask, I2C* i2c, NTPClient* timeclient, WiFiServer* server, Settings* settings, Fade* fade, HV* hv);
     void connectWiFi();
     void ntpBegin();
     void serverBegin();
@@ -35,15 +36,13 @@ class WiFiTask {
     WiFiServer* _server;
     Settings* _settings;
     Fade* _fade;
+    HV* _hv;
 
     String urlDecode(const String& text);
 
     int cb;                                        // Holds parsed NTP packet
     byte count;                                    // Counter for retrying packets
     byte retry_max = 1;                            // Number of total attempts (retry_count * try_count)
-
-//    const char* ssid = WIFI_SSID;                  // Your network SSID
-//    const char* pass = WIFI_PASS;                  // Your network password
 
     const char* ssid_ap = WIFI_AP_SSID;                  // Your network AP SSID
     const char* pass_ap = WIFI_AP_PASS;                  // Your network password

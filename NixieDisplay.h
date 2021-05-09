@@ -27,7 +27,7 @@ class NixieDisplay {
     void enableAllDots();
     void disableAllSegments();
     void updateDisplay();
-    void runSlotMachine();
+    void runSlotMachine(byte c);
   private: 
     // Frame of data to be shifted into 64 bit HV shift register
     byte _frame[8]; // 8 bytes = 64 bits = 6 digits @ 10 bits + 2 dots @ 1 bit + 2 unused bits

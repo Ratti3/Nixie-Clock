@@ -7,10 +7,9 @@ TimeTask::TimeTask(NixieDisplay* nixie, I2C* i2c, Settings* settings) {
 }
 
 void TimeTask::task() {
-
-int h = 88;
-int m = 88;
-int s = 88;
+  int h = 88;
+  int m = 88;
+  int s = 88;
 
   // Get current time from DS3231 RTC chip
   if (!_settings->I2C_CODE[0]) {
@@ -19,7 +18,6 @@ int s = 88;
     m = _settings->minute;
     s = _settings->second;
   }
-
 
 //Serial.print(h);
 //Serial.print(m);
@@ -81,26 +79,22 @@ int s = 88;
 
   // Once a minute, run the slot machine effect to prevent cathode poisoning
   if (s == 0) {
-    _nixie->runSlotMachine();
+    _nixie->runSlotMachine(1);
   }
-  
 }
 
 void TimeTask::showDate() {
-
-  // Get current date from DS3231 RTC chip
   int d = 88;
   int m = 88;
   int y = 88;
 
-  // Get current time from DS3231 RTC chip
+  // Get current date from DS3231 RTC chip
   if (!_settings->I2C_CODE[0]) {
     _i2c->readDate();
     d = _settings->day;
     m = _settings->month;
     y = _settings->year;
   }
-
 
   // Enable and disable the right segments
   _nixie->disableSegments(hourTens, 10);
@@ -120,7 +114,6 @@ void TimeTask::showDate() {
   // Write to display
   _nixie->updateDisplay();
   delay(3000);
-
 }
 
 void TimeTask::setState(State state) {

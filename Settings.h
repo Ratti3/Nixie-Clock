@@ -1,26 +1,65 @@
 #ifndef Settings_h
 #define Settings_h
 
+// These are part of the Arduino Core
 #include "Arduino.h"
+//#include <Wire.h>
+//#include <SPI.h>
 
-#include <Wire.h>
-#include <SPI.h>
-#include <WiFiNINA.h>                  // v1.8.8 WiFi library - https://github.com/arduino-libraries/WiFiNINA
-#include <WiFiUdp.h>                   // v1.8.8 WiFi UDP library - https://github.com/arduino-libraries/WiFiNINA
-#include <NTPClient.h>                 // v3.2.0 NTP Client Library - https://github.com/arduino-libraries/NTPClient
-#include <FlashStorage.h>              // v1.0.0 Save settings to Flash memory - https://github.com/cmaglie/FlashStorage
+// AP credentials file
 #include "Secrets.h"                   // This file holds the AP WiFi name and password
-#include <RTClib.h>                    // v1.13.0 DS3231 RTC - https://github.com/adafruit/RTClib
-#include <Adafruit_Sensor.h>           // v1.1.4 Required by BME280 - https://github.com/adafruit/Adafruit_Sensor
-#include <Adafruit_BME280.h>           // v2.1.2 BME280 Environmental Sensor - https://github.com/adafruit/Adafruit_BME280_Library
-#include <Adafruit_VEML7700.h>         // v1.1.1 VEML7700 Light Sensor https://github.com/adafruit/Adafruit_VEML7700
 
+// All the extra downloaded libraries go here
+#include <WiFiNINA.h>                  // v1.8.9 WiFi Library - https://github.com/arduino-libraries/WiFiNINA
+#include <WiFiUdp.h>                   // v1.8.9 WiFi UDP library - https://github.com/arduino-libraries/WiFiNINA
+#include <NTPClient.h>                 // v3.2.0 NTP Client Library - https://github.com/arduino-libraries/NTPClient
+#include <FlashStorage.h>              // v1.0.0 Use Flash Memory as EEPROM - Nano 33 has no EEPROM :( - https://github.com/cmaglie/FlashStorage
+#include <RTClib.h>                    // v1.13.0 DS3231 RTC Library - https://github.com/adafruit/RTClib
+#include <Adafruit_Sensor.h>           // v1.1.4 Required by BME280 - https://github.com/adafruit/Adafruit_Sensor
+#include <Adafruit_BME280.h>           // v2.1.3 BME280 Environmental Sensor Library - https://github.com/adafruit/Adafruit_BME280_Library
+#include <Adafruit_VEML7700.h>         // v1.1.1 VEML7700 Light Sensor Library - https://github.com/adafruit/Adafruit_VEML7700
+
+// Create a structure to store the WiFi credentials
 typedef struct {
-  boolean valid;
+  bool valid;
   char flash_SSID[50];
   char flash_PASS[50];
-} wifiCreds;
+} savedWiFi;
 
+typedef struct {
+  bool validBrightness;
+  byte flashBrightness;
+} savedBrightness;
+
+typedef struct {
+  bool validNTP;
+  bool flashNTP;
+} savedNTP;
+
+typedef struct {
+  bool validPIR;
+  bool flashPIR;
+} savedPIR;
+
+typedef struct {
+  bool validLight;
+  bool flashLight;
+} savedLight;
+
+typedef struct {
+  bool validUSB;
+  bool flashUSB;
+} savedUSB;
+
+typedef struct {
+  bool validFont;
+  bool flashFont;
+} savedFont;
+
+typedef struct {
+  bool validBackground;
+  bool flashBackground;
+} savedBackground;
 
 class Settings {
   public:
@@ -28,7 +67,7 @@ class Settings {
 
     // Changeable global variables
 
-    int utcOffset = 3600;                          // UTC offset in seconds
+    int utcOffset = 3600;                          // UTC offset in seconds, 3600 = 1 hour
 
     const char* ntpServerName = "uk.pool.ntp.org"; // The NTP pool to query
     byte try_count = 15;                           // Number of packet send attempts, 1 try_count = 2 seconds between each packet
@@ -43,6 +82,10 @@ class Settings {
     unsigned long previousTime_PIR = 20;           // Event start time for PIR functions
     unsigned long previousTime_Server = 30;        // Event start time for Server functions
 
+    const char* webTitle = "Arduino Nano 33 IoT Nixie Clock";
+    const char* webName = "Living Room";
+    const char* webFont = "Audiowide";
+
     // Global variables
 
     unsigned long currentTime;                     // Used by millis
@@ -54,13 +97,23 @@ class Settings {
     String flash_SSID;
     String flash_PASS;
 
+    byte flashBrightness = 100;
+    bool flashNTP = 1;
+    bool flashPIR = 1;
+    bool flashLight = 1;
+    bool flashUSB = 1;
+    byte flashFont = 1;
+    byte flashBackground = 4;
+
     const char* ssid;
     const char* pass;
 
     bool noSSID = 0;
 
-    void wifiCredentials(bool save);
+    void rwSettings(byte setting, bool save);
     void debug(byte n);
+
+    const char* fwVersion = "1.0";
 
   private:
 };

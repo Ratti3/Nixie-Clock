@@ -1,6 +1,8 @@
 #include "Fade.h"
 
-Fade::Fade() {}
+Fade::Fade(Settings* settings) {
+  _settings = settings;
+}
 
 void Fade::fadeIn() {
   for(uint8_t i = 0; i != 255; i += 1 ){
@@ -17,12 +19,5 @@ void Fade::fadeOut() {
 }
 
 void Fade::setBrightness() {
-  analogWrite(PIN_HV_BL, 100);
+  analogWrite(PIN_HV_BL, _settings->flashBrightness);
 }
-
-/*
-  
-  digitalWrite(PIN_HV_EN, LOW);
-  delay(1000);
-
-*/
