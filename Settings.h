@@ -1,65 +1,31 @@
 #ifndef Settings_h
 #define Settings_h
 
-// These are part of the Arduino Core
 #include "Arduino.h"
-//#include <Wire.h>
-//#include <SPI.h>
 
-// AP credentials file
 #include "Secrets.h"                   // This file holds the AP WiFi name and password
 
 // All the extra downloaded libraries go here
-#include <WiFiNINA.h>                  // v1.8.9 WiFi Library - https://github.com/arduino-libraries/WiFiNINA
-#include <WiFiUdp.h>                   // v1.8.9 WiFi UDP library - https://github.com/arduino-libraries/WiFiNINA
-#include <NTPClient.h>                 // v3.2.0 NTP Client Library - https://github.com/arduino-libraries/NTPClient
-#include <FlashStorage.h>              // v1.0.0 Use Flash Memory as EEPROM - Nano 33 has no EEPROM :( - https://github.com/cmaglie/FlashStorage
+#include <WiFiNINA.h>                  // v1.8.11 WiFi Library - https://github.com/arduino-libraries/WiFiNINA
+#include <WiFiUdp.h>                   // v1.8.11 WiFi UDP library - https://github.com/arduino-libraries/WiFiNINA
+#include <NTPClient.h>                 // v3.2.0  NTP Client Library - https://github.com/arduino-libraries/NTPClient
+#include <FlashStorage.h>              // v1.0.0  Use Flash Memory as EEPROM - Nano 33 has no EEPROM :( - https://github.com/cmaglie/FlashStorage
 #include <RTClib.h>                    // v1.13.0 DS3231 RTC Library - https://github.com/adafruit/RTClib
-#include <Adafruit_Sensor.h>           // v1.1.4 Required by BME280 - https://github.com/adafruit/Adafruit_Sensor
-#include <Adafruit_BME280.h>           // v2.1.3 BME280 Environmental Sensor Library - https://github.com/adafruit/Adafruit_BME280_Library
-#include <Adafruit_VEML7700.h>         // v1.1.1 VEML7700 Light Sensor Library - https://github.com/adafruit/Adafruit_VEML7700
+#include <Adafruit_Sensor.h>           // v1.1.4  Required by BME280 - https://github.com/adafruit/Adafruit_Sensor
+#include <Adafruit_BME280.h>           // v2.1.4  BME280 Environmental Sensor Library - https://github.com/adafruit/Adafruit_BME280_Library
+#include <Adafruit_VEML7700.h>         // v1.1.1  VEML7700 Light Sensor Library - https://github.com/adafruit/Adafruit_VEML7700
 
-// Create a structure to store the WiFi credentials
-typedef struct {
-  bool valid;
-  char flash_SSID[50];
-  char flash_PASS[50];
-} savedWiFi;
-
-typedef struct {
-  bool validBrightness;
-  byte flashBrightness;
-} savedBrightness;
-
-typedef struct {
-  bool validNTP;
-  bool flashNTP;
-} savedNTP;
-
-typedef struct {
-  bool validPIR;
-  bool flashPIR;
-} savedPIR;
-
-typedef struct {
-  bool validLight;
-  bool flashLight;
-} savedLight;
-
-typedef struct {
-  bool validUSB;
-  bool flashUSB;
-} savedUSB;
-
-typedef struct {
-  bool validFont;
-  bool flashFont;
-} savedFont;
-
-typedef struct {
-  bool validBackground;
-  bool flashBackground;
-} savedBackground;
+// Create a structures to store the WiFi credentials and all other settings into flash
+// NOTE: This is lost when a new skecth is uploaded
+typedef struct {bool valid; char flash_SSID[50]; char flash_PASS[50];} savedWiFi;
+typedef struct {bool validBrightness; byte flashBrightness;} savedBrightness;
+typedef struct {bool validNTP; bool flashNTP;} savedNTP;
+typedef struct {bool validPIR; bool flashPIR;} savedPIR;
+typedef struct {bool validLight; bool flashLight;} savedLight;
+typedef struct {bool validUSB; bool flashUSB;} savedUSB;
+typedef struct {bool validFont; bool flashFont;} savedFont;
+typedef struct {bool validBackground; bool flashBackground;} savedBackground;
+typedef struct {bool validUTCOffset; bool flashUTCOffset;} savedUTCOffset;
 
 class Settings {
   public:
@@ -67,10 +33,7 @@ class Settings {
 
     // Changeable global variables
 
-    int utcOffset = 3600;                          // UTC offset in seconds, 3600 = 1 hour
-
     const char* ntpServerName = "uk.pool.ntp.org"; // The NTP pool to query
-    byte try_count = 15;                           // Number of packet send attempts, 1 try_count = 2 seconds between each packet
     
     const unsigned long eventTime_Time = 100;      // Event time for time functions
     const unsigned long eventTime_Light = 1000;    // Event time for light functions
@@ -91,19 +54,21 @@ class Settings {
     unsigned long currentTime;                     // Used by millis
 
     bool I2C_CODE[3];                              // Hold success status of I2C devices
-    int hour, minute, second;                      // Store RTC data
-    int day, month, year;                          // Store RTC data
+    byte hour, minute, second;                     // Store RTC data
+    byte day, month, year;                         // Store RTC data
 
     String flash_SSID;
     String flash_PASS;
 
-    byte flashBrightness = 100;
-    bool flashNTP = 1;
-    bool flashPIR = 1;
-    bool flashLight = 1;
-    bool flashUSB = 1;
-    byte flashFont = 1;
-    byte flashBackground = 4;
+    // Flash EEPROM initial save values
+    byte flashBrightness = 100;                    // PWM HV5530 brightness level 1 - 255 (Note: 0 would turn off the Nixies)
+    bool flashNTP = 1;                             // Enable/Disable NTP
+    bool flashPIR = 1;                             // Enable/Disable PIR
+    bool flashLight = 1;                           // Enable/Disable Light Sensor
+    bool flashUSB = 1;                             // Set power supply mode, setting to 1 enables the 5v to 12v booster for the HV5530
+    byte flashFont = 1;                            // The WebUI font
+    byte flashBackground = 4;                      // The WebUI background
+    int flashUTCOffset = 1;                        // UTC offset in hours
 
     const char* ssid;
     const char* pass;

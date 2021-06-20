@@ -5,6 +5,7 @@ FlashStorage(fsBrightness, savedBrightness);
 FlashStorage(fsNTP, savedNTP);
 FlashStorage(fsPIR, savedPIR);
 FlashStorage(fsLight, savedLight);
+FlashStorage(fsUTCOffset, savedUTCOffset);
 FlashStorage(fsUSB, savedUSB);
 FlashStorage(fsFont, savedFont);
 FlashStorage(fsBackground, savedBackground);
@@ -104,7 +105,22 @@ void Settings::rwSettings(byte setting, bool save) {
       }
       break;
     case 19: // UTC Offset
-      
+      savedUTCOffset savedutcoffset;
+      savedutcoffset = fsUTCOffset.read();
+      if (save) {
+        savedutcoffset.flashUTCOffset = flashUTCOffset;
+        savedutcoffset.validUTCOffset = true;
+        fsUTCOffset.write(savedutcoffset);
+        Serial.println("[DEBUG] UTC Offset settings have been saved");
+      } else {
+        if (savedutcoffset.validUTCOffset) {
+          flashUTCOffset = savedutcoffset.flashUTCOffset;
+          Serial.print("Read: ");
+          Serial.println(flashUTCOffset);
+        } else {
+          Serial.println("No Value!");
+        }
+      }
       break;
     case 22: // Set on/off hour
       

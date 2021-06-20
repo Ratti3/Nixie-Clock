@@ -16,6 +16,7 @@ class I2C {
     void readTime();
     void readDate();
     void adjustTime(unsigned long epoch);
+    void adjustDateTime(bool dt);
     void displayTHP();
     void readLight();
     void PIR();

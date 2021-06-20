@@ -23,10 +23,9 @@ class WiFiTask {
     void apServer();
     void startAP();
 
-    bool WiFiFail = 0;                             // Holds status for WiFi connection failure
+    bool WiFiFail = 0;                             // Holds state of WiFi connection
     bool apStatus;
   private: 
-    void getNTPTime();
     void printWifiStatus();
     
     NixieDisplay* _nixie;
@@ -39,10 +38,6 @@ class WiFiTask {
     HV* _hv;
 
     String urlDecode(const String& text);
-
-    int cb;                                        // Holds parsed NTP packet
-    byte count;                                    // Counter for retrying packets
-    byte retry_max = 1;                            // Number of total attempts (retry_count * try_count)
 
     const char* ssid_ap = WIFI_AP_SSID;                  // Your network AP SSID
     const char* pass_ap = WIFI_AP_PASS;                  // Your network password

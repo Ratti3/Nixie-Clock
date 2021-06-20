@@ -165,6 +165,7 @@ void I2C::displayTHP() {
 
 }
 
+// Light Sensor Routine
 void I2C::readLight() {
   if (_settings->I2C_CODE[2]) {
     return;
@@ -181,27 +182,25 @@ void I2C::readLight() {
   }
 }
 
+// PIR Sensor Routine
 void I2C::PIR() {
-  val = digitalRead(PIN_PIR);  // read input value
-  if (val == HIGH) {            // check if the input is HIGH
-    digitalWrite(LED_BUILTIN, HIGH);  // turn LED ON
+  val = digitalRead(PIN_PIR);        // Read the PIR Pin Output
+  if (val == HIGH) {
+    digitalWrite(LED_BUILTIN, HIGH); // Turn built in LED ON
     if (pirState == LOW) {
-      // we have just turned on
       Serial.println("Motion detected!");
-      // We only want to print on the output change, not state
       pirState = HIGH;
     }
   } else {
-    digitalWrite(LED_BUILTIN, LOW); // turn LED OFF
-    if (pirState == HIGH){
-      // we have just turned of
+    digitalWrite(LED_BUILTIN, LOW); // Turn built in LED OFF
+    if (pirState == HIGH) {
       Serial.println("Motion ended!");
-      // We only want to print on the output change, not state
       pirState = LOW;
     }
   }
 }
 
+// Read time from DS3231
 void I2C::readTime() {
   DateTime now = _rtc->now();
   _settings->hour = now.hour();
@@ -209,7 +208,7 @@ void I2C::readTime() {
   _settings->second = now.second();
 }
 
-
+// Read date from DS3231
 void I2C::readDate() {
   DateTime now = _rtc->now();
   _settings->day = now.day();
@@ -217,7 +216,19 @@ void I2C::readDate() {
   _settings->year = now.year();
 }
 
+// Adjust DS3231 date and time using epoch
 void I2C::adjustTime(unsigned long epoch) {
   _rtc->adjust(DateTime(epoch));
   Serial.print("Setting DS3231 Date and Time");
+}
+
+// Adjust DS3231 date/time using user input values
+void I2C::adjustDateTime(bool dt) {
+  if (dt) { // If dt is true, then only set date with the data from the WebUI
+    readTime();
+  } else {  // If dt is false, then only set time with the data from the WebUI
+    readDate();
+  }
+  _rtc->adjust(DateTime(_settings->year, _settings->month, _settings->day, _settings->hour, _settings->minute, _settings->second));
+  Serial.println("Setting date/time manually via WebUI");
 }

@@ -17,12 +17,13 @@ void NixieDisplay::begin() {
   // LED Colon
   pinMode(PIN_COLON, OUTPUT);
 
-  // 12V DC Booster Module Enable
-  pinMode(PIN_SHDN, OUTPUT);
-  digitalWrite(PIN_SHDN, HIGH);
-
-  // HV Booster Module Enable
-  pinMode(PIN_HV_EN, OUTPUT);
+  // LED Switches
+  pinMode(PIN_SW1_LED1, OUTPUT);
+  pinMode(PIN_SW2_LED2, OUTPUT);
+  pinMode(PIN_SW3_LED3, OUTPUT);
+  analogWrite(PIN_SW1_LED1, 200);
+  analogWrite(PIN_SW2_LED2, 90);
+  analogWrite(PIN_SW3_LED3, 128);
   
   disableAllSegments();
   updateDisplay(); // Write 64 zeros into the shift registers before enabling HV
@@ -95,7 +96,7 @@ void NixieDisplay::updateDisplay() {
 
 // Anti cathode poisoning spins
 void NixieDisplay::runSlotMachine(byte c) {
-  for (byte r = 0; r <= c; ++r) {
+  for (byte r = 0; r < c; ++r) {
     switch(random(6)) {
       // All segments at the same time
       case 0:
