@@ -20,30 +20,29 @@
 typedef struct {bool valid; char flash_SSID[50]; char flash_PASS[50];} savedWiFi;
 typedef struct {bool validBrightness; byte flashBrightness;} savedBrightness;
 typedef struct {bool validNTP; bool flashNTP;} savedNTP;
+typedef struct {bool validNTPPool; byte flashNTPPool;} savedNTPPool;
 typedef struct {bool validPIR; bool flashPIR;} savedPIR;
 typedef struct {bool validLight; bool flashLight;} savedLight;
 typedef struct {bool validUSB; bool flashUSB;} savedUSB;
-typedef struct {bool validFont; bool flashFont;} savedFont;
-typedef struct {bool validBackground; bool flashBackground;} savedBackground;
-typedef struct {bool validUTCOffset; bool flashUTCOffset;} savedUTCOffset;
+typedef struct {bool validFont; byte flashFont;} savedFont;
+typedef struct {bool validBackground; byte flashBackground;} savedBackground;
+typedef struct {bool validUTCOffset; byte flashUTCOffset;} savedUTCOffset;
 
 class Settings {
   public:
     Settings();
 
     // Changeable global variables
-
-    const char* ntpServerName = "uk.pool.ntp.org"; // The NTP pool to query
     
-    const unsigned long eventTime_Time = 100;      // Event time for time functions
-    const unsigned long eventTime_Light = 1000;    // Event time for light functions
-    const unsigned long eventTime_PIR = 2000;      // Event time for PIR functions
-    const unsigned long eventTime_Server = 2000;   // Event time for Server functions
+    const unsigned long eventTime_Time = 100;          // Event time for time functions
+    const unsigned long eventTime_Light = 1000;        // Event time for light functions
+    const unsigned long eventTime_PIR = 2000;          // Event time for PIR functions
+    const unsigned long eventTime_Server = 2000;       // Event time for Server functions
 
-    unsigned long previousTime_Time = 0;           // Event start time for time functions
-    unsigned long previousTime_Light = 10;         // Event start time for light functions
-    unsigned long previousTime_PIR = 20;           // Event start time for PIR functions
-    unsigned long previousTime_Server = 30;        // Event start time for Server functions
+    unsigned long previousTime_Time = 0;               // Event start time for time functions
+    unsigned long previousTime_Light = 10;             // Event start time for light functions
+    unsigned long previousTime_PIR = 20;               // Event start time for PIR functions
+    unsigned long previousTime_Server = 30;            // Event start time for Server functions
 
     const char* webTitle = "Arduino Nano 33 IoT Nixie Clock";
     const char* webName = "Living Room";
@@ -51,30 +50,34 @@ class Settings {
 
     // Global variables
 
-    unsigned long currentTime;                     // Used by millis
+    unsigned long currentTime;                         // Used by millis
 
-    bool I2C_CODE[3];                              // Hold success status of I2C devices
-    byte hour, minute, second;                     // Store RTC data
-    byte day, month, year;                         // Store RTC data
+    bool I2C_CODE[3];                                  // Hold success status of I2C devices
+    byte hour, minute, second;                         // Store RTC data
+    byte day, month, year;                             // Store RTC data
 
     String flash_SSID;
     String flash_PASS;
 
     // Flash EEPROM initial save values
-    byte flashBrightness = 100;                    // PWM HV5530 brightness level 1 - 255 (Note: 0 would turn off the Nixies)
-    bool flashNTP = 1;                             // Enable/Disable NTP
-    bool flashPIR = 1;                             // Enable/Disable PIR
-    bool flashLight = 1;                           // Enable/Disable Light Sensor
-    bool flashUSB = 1;                             // Set power supply mode, setting to 1 enables the 5v to 12v booster for the HV5530
-    byte flashFont = 1;                            // The WebUI font
-    byte flashBackground = 4;                      // The WebUI background
-    int flashUTCOffset = 1;                        // UTC offset in hours
+    byte flashBrightness = 100;                        // PWM HV5530 brightness level 1 - 255 (Note: 0 would turn off the Nixies)
+    bool flashNTP = 1;                                 // Enable/Disable NTP
+    byte flashNTPPool = 3;
+    bool flashPIR = 1;                                 // Enable/Disable PIR
+    bool flashLight = 1;                               // Enable/Disable Light Sensor
+    bool flashUSB = 1;                                 // Set power supply mode, setting to 1 enables the 5v to 12v booster for the HV5530
+    byte flashFont = 1;                                // The WebUI font
+    byte flashBackground = 4;                          // The WebUI background
+    int flashUTCOffset = 1;                            // UTC offset in hours
 
+    const char* ntpServerName = "europe.pool.ntp.org"; // Stores the NTP pool to query, changed via flashNTPPool
+    
     const char* ssid;
     const char* pass;
 
     bool noSSID = 0;
 
+    void begin();
     void rwSettings(byte setting, bool save);
     void debug(byte n);
 

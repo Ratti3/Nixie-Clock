@@ -18,8 +18,7 @@ WiFiTask::WiFiTask(NixieDisplay* nixie, TimeTask* timetask, I2C* i2c, NTPClient*
 // Connects WiFi
 void WiFiTask::connectWiFi() {
 
-  // Get saved credentials from flash
-  _settings->rwSettings(25, 0);
+  // Use saved credentials from flash
   if (_settings->noSSID) {
     WiFiFail = 1;
     return;
@@ -54,9 +53,11 @@ void WiFiTask::connectWiFi() {
   }
 }
 
-// Start the NTP client
+// Start the NTP client and set the UTC Offset from saved flash 
 void WiFiTask::ntpBegin() {
   _timeclient->begin();
+  _timeclient->setPoolServerName(_settings->ntpServerName);
+  _timeclient->setTimeOffset(_settings->flashUTCOffset * 3600);
 }
 
 // Start the web server
@@ -233,7 +234,7 @@ void WiFiTask::clientServer() {
                 CP("body {background: radial-gradient(lightgrey 3px, transparent 4px), radial-gradient(lightgrey 3px, transparent 4px), linear-gradient(#f2f2f2 4px, transparent 0), linear-gradient(45deg, transparent 74px, transparent 75px, #a4a4a4 75px, #a4a4a4 76px, transparent 77px, transparent 109px), linear-gradient(-45deg, transparent 75px, transparent 76px, #a4a4a4 76px, #a4a4a4 77px, transparent 78px, transparent 109px), #f2f2f2; background-size: 109px 109px, 109px 109px, 100% 6px, 109px 109px, 109px 109px; background-position: 54px 55px, 0px 0px, 0px 0px, 0px 0px, 0px 0px;}");
                 break;
             }
-
+Serial.println(_settings->flashBackground);
             CP("div {text-align: center; margin: 0 auto;}");
 
             CP("h1, h3 {font-family: " + String(_settings->webFont) + ", Verdana; font-weight: bold;}");
@@ -332,8 +333,8 @@ void WiFiTask::clientServer() {
 
             CP("<div><h1>" + String(_settings->webTitle) + " : " + String(_settings->webName) + "</h1><h3>Firmware Version : " + String(_settings->fwVersion) + "</h3>");
 
-            // WiFi menu [25]
-            if ((WiFiFail && setting == 0) || setting == 25) {
+            // WiFi menu [26]
+            if ((WiFiFail && setting == 0) || setting == 26) {
               CP("<a class='menu_active' onclick='displaySettings(0)' id='B1'>");
             } else {
               CP("<a class='menu' onclick='displaySettings(0)' id='B1'>");
@@ -377,8 +378,8 @@ void WiFiTask::clientServer() {
             CP("<span class='menu-icon'><svg width='16' height='16' viewBox='2 2 16 16' fill='currentColor'><path fill-rule='evenodd' d='M4.5 13.5A.5.5 0 015 13h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 9h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 5h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5z' clip-rule='evenodd'/></svg></span>");
             CP("<span class='menu-text'>Power</span></a>");
 
-            // UI menu [23 & 24]
-            if (setting == 23 || setting == 24) {
+            // UI menu [24 & 25]
+            if (setting == 24 || setting == 25) {
               CP("<a class='menu_active' onclick='displaySettings(5)' id='B6'>");
             } else {
               CP("<a class='menu' onclick='displaySettings(5)' id='B6'>");
@@ -386,18 +387,18 @@ void WiFiTask::clientServer() {
             CP("<span class='menu-icon'><svg width='16' height='16' viewBox='2 2 16 16' fill='currentColor'><path fill-rule='evenodd' d='M4.5 13.5A.5.5 0 015 13h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 9h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 5h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5z' clip-rule='evenodd'/></svg></span>");
             CP("<span class='menu-text'>UI</span></a>");
 
-            // WiFi menu [25]
+            // WiFi menu [26]
             CP("<div class='divTable'>");
             CP("<div class='divTableBody'>");
-            if ((WiFiFail && setting == 0) || setting == 25) {
+            if ((WiFiFail && setting == 0) || setting == 26) {
               CP("<div class='divTableRow' id='M1' style='display:block;')>");
             } else {
               CP("<div class='divTableRow' id='M1' style='display:none;')>");
             }
             CP("<div class='divTableCell'>");
 
-            // 25 Change WiFi
-            CP("<form name='wifi' action='25' method='get'><a class='b'>");
+            // 26 Change WiFi
+            CP("<form name='wifi' action='26' method='get'><a class='b'>");
             CP("<span class='btn-icon' onclick='wifi.submit()'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M0 7.244c3.071-3.24 7.314-5.244 12-5.244 4.687 0 8.929 2.004 12 5.244l-2.039 2.15c-2.549-2.688-6.071-4.352-9.961-4.352s-7.412 1.664-9.961 4.352l-2.039-2.15zm5.72 6.034c1.607-1.696 3.827-2.744 6.28-2.744s4.673 1.048 6.28 2.744l2.093-2.208c-2.143-2.261-5.103-3.659-8.373-3.659s-6.23 1.398-8.373 3.659l2.093 2.208zm3.658 3.859c.671-.708 1.598-1.145 2.622-1.145 1.023 0 1.951.437 2.622 1.145l2.057-2.17c-1.197-1.263-2.851-2.044-4.678-2.044s-3.481.782-4.678 2.044l2.055 2.17zm2.622 1.017c-1.062 0-1.923.861-1.923 1.923s.861 1.923 1.923 1.923 1.923-.861 1.923-1.923-.861-1.923-1.923-1.923z'/></svg></span>");
             CP("<span class='btn-slide'>");
             CP("<input type='text' id='ssid' name='ssid' size='25' maxlength='50' placeholder='SSID'>");
@@ -551,6 +552,22 @@ void WiFiTask::clientServer() {
             CP("<span class='btn-text' onclick='onoffhour.submit()'>Set On/Off Hour</span>");
             CP("</a></form>");
 
+            // 23 Set NTP Pool
+            CP("<form name='ntppool' action='c6' method='get'><a class='o'>");
+            CP("<span class='btn-icon' onclick='ntppool.submit()'><svg width='66' height='66' viewBox='2 2 16 16' fill='currentColor'><path d='M6.887 7.2l-.964-.165A2.5 2.5 0 105.5 12H8v1H5.5a3.5 3.5 0 11.59-6.95 5.002 5.002 0 119.804 1.98A2.501 2.501 0 0115.5 13H12v-1h3.5a1.5 1.5 0 00.237-2.981L14.7 8.854l.216-1.028a4 4 0 10-7.843-1.587l-.185.96z'/><path fill-rule='evenodd' d='M7 14.5a.5.5 0 01.707 0L10 16.793l2.293-2.293a.5.5 0 11.707.707l-2.646 2.647a.5.5 0 01-.708 0L7 15.207a.5.5 0 010-.707z' clip-rule='evenodd'/><path fill-rule='evenodd' d='M10 8a.5.5 0 01.5.5v8a.5.5 0 01-1 0v-8A.5.5 0 0110 8z' clip-rule='evenodd'/></svg></span>");
+            CP("<span class='btn-slide'>");
+            CP("<select class='selectwide' name='v' id='v'>");
+            CP("<option value='1'>africa.pool.ntp.org</option>");
+            CP("<option value='2'>asia.pool.ntp.org</option>");
+            CP("<option value='3' selected>europe.pool.ntp.org</option>");
+            CP("<option value='4'>north-america.pool.ntp.org</option>");
+            CP("<option value='5'>oceania.pool.ntp.org</option>");
+            CP("<option value='6'>south-america.pool.ntp.org</option>");
+            CP("</select>");
+            CP("</span>");
+            CP("<span class='btn-text' onclick='setdate.submit()'>Set NTP Pool</span>");
+            CP("</a></form>");
+
             CP("</div><div class='divTableCell'>");
 
             // 13 Toggle NTP Sync
@@ -601,7 +618,7 @@ void WiFiTask::clientServer() {
             // 19 Set UTC Offset
             CP("<form name='utcoffset' action='19' method='get'><a class='o'>");
             CP("<span class='btn-icon' onclick='utcoffset.submit()'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M11 6v8h7v-2h-5v-6h-2zm10.854 7.683l1.998.159c-.132.854-.351 1.676-.652 2.46l-1.8-.905c.2-.551.353-1.123.454-1.714zm-2.548 7.826l-1.413-1.443c-.486.356-1.006.668-1.555.933l.669 1.899c.821-.377 1.591-.844 2.299-1.389zm1.226-4.309c-.335.546-.719 1.057-1.149 1.528l1.404 1.433c.583-.627 1.099-1.316 1.539-2.058l-1.794-.903zm-20.532-5.2c0 6.627 5.375 12 12.004 12 1.081 0 2.124-.156 3.12-.424l-.665-1.894c-.787.2-1.607.318-2.455.318-5.516 0-10.003-4.486-10.003-10s4.487-10 10.003-10c2.235 0 4.293.744 5.959 1.989l-2.05 2.049 7.015 1.354-1.355-7.013-2.184 2.183c-2.036-1.598-4.595-2.562-7.385-2.562-6.629 0-12.004 5.373-12.004 12zm23.773-2.359h-2.076c.163.661.261 1.344.288 2.047l2.015.161c-.01-.755-.085-1.494-.227-2.208z'/></svg></span>");
-            CP("<span class='btn-slide'><input type='range' id='v' name='v' value='1' min='-23' max='23' oninput='this.nextElementSibling.value = this.value' class='slide'><output>1</output></span>");
+            CP("<span class='btn-slide'><input type='range' id='v' name='v' value='1' min='-12' max='12' oninput='this.nextElementSibling.value = this.value' class='slide'><output>1</output></span>");
             CP("<span class='btn-text' onclick='utcoffset.submit()'>Set UTC Offset</span>");
             CP("</a></form>");
 
@@ -632,18 +649,18 @@ void WiFiTask::clientServer() {
 
             CP("</div></div></div></div>");
 
-            // UI menu [23 & 24]
+            // UI menu [24 & 25]
             CP("<div class='divTable'>");
             CP("<div class='divTableBody'>");
-            if (setting == 23 || setting == 24) {
+            if (setting == 24 || setting == 25) {
               CP("<div class='divTableRow' id='M6' style='display:block'>");
             } else {
               CP("<div class='divTableRow' id='M6' style='display:none'>");
             }
             CP("<div class='divTableCell'>");
 
-            // 23 Change WebUI Font
-            CP("<form name='changefont' action='23' method='get'><a class='o'>");
+            // 24 Change WebUI Font
+            CP("<form name='changefont' action='24' method='get'><a class='o'>");
             CP("<span class='btn-icon' onclick='changefont.submit()'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M24 20v1h-4v-1h.835c.258 0 .405-.178.321-.422l-.473-1.371h-2.231l-.575-1.59h2.295l-1.362-4.077-1.154 3.451-.879-2.498.921-2.493h2.222l3.033 8.516c.111.315.244.484.578.484h.469zm-6-1h1v2h-7v-2h.532c.459 0 .782-.453.633-.887l-.816-2.113h-6.232l-.815 2.113c-.149.434.174.887.633.887h1.065v2h-7v-2h.43c.593 0 1.123-.375 1.32-.935l5.507-15.065h3.952l5.507 15.065c.197.56.69.935 1.284.935zm-10.886-6h4.238l-2.259-6.199-1.979 6.199z'/></svg></span>");
             CP("<span class='btn-slide'>");
             CP("<select class='selectwide' name='v' id='v'>");
@@ -662,8 +679,8 @@ void WiFiTask::clientServer() {
 
             CP("</div><div class='divTableCell'>");
 
-            // 24 Change WebUI Background
-            CP("<form name='changebg' action='24' method='get'><a class='o'>");
+            // 25 Change WebUI Background
+            CP("<form name='changebg' action='25' method='get'><a class='o'>");
             CP("<span class='btn-icon' onclick='changebg.submit()'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M9 12c0-.552.448-1 1.001-1s.999.448.999 1-.446 1-.999 1-1.001-.448-1.001-1zm6.2 0l-1.7 2.6-1.3-1.6-3.2 4h10l-3.8-5zm8.8-5v14h-20v-3h-4v-15h21v4h3zm-20 9v-9h15v-2h-17v11h2zm18-7h-16v10h16v-10z'/></svg></span>");
             CP("<span class='btn-slide'>");
             CP("<select class='selectwide' name='v' id='v'>");
@@ -763,18 +780,21 @@ void WiFiTask::clientServer() {
           setting = 21;
         } else if (currentLine.startsWith("GET /22")) {      // Set on/off hour
           setting = 22;
-        } else if (currentLine.startsWith("GET /23")) {      // Change WebUI Font
+        } else if (currentLine.startsWith("GET /23")) {      // Set NTP pool
+          _settings->flashNTPPool = currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')).toInt();
+          setting = 23;
+        } else if (currentLine.startsWith("GET /24")) {      // Change WebUI Font
           _settings->flashFont = currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')).toInt();
           Serial.println(_settings->flashFont);
-          setting = 23;
-        } else if (currentLine.startsWith("GET /24")) {      // Change WebUI Backgound
+          setting = 24;
+        } else if (currentLine.startsWith("GET /25")) {      // Change WebUI Backgound
           _settings->flashBackground = currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')).toInt();
           Serial.println(_settings->flashBackground);
-          setting = 24;
-        } else if (currentLine.startsWith("GET /25")) {      // Change WiFi
+          setting = 25;
+        } else if (currentLine.startsWith("GET /26")) {      // Change WiFi
           _settings->flash_SSID = urlDecode(currentLine.substring(13, currentLine.indexOf('&'))); 
           _settings->flash_PASS = urlDecode(currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')));
-          setting = 25;
+          setting = 26;
         }
       }
     }
@@ -825,19 +845,21 @@ void WiFiTask::clientServer() {
       case 22: // Set on/off hour
       
         break;
-      case 23: // Change WebUI Font
-        _settings->rwSettings(23, 1);
+      case 23: // Set NTP Pool
+      
         break;
-      case 24: // Change WebUI Backgound
+      case 24: // Change WebUI Font
         _settings->rwSettings(24, 1);
         break;
-      case 25: // Change WiFi
+      case 25: // Change WebUI Backgound
         _settings->rwSettings(25, 1);
+        break;
+      case 26: // Change WiFi
+        _settings->rwSettings(26, 1);
         Serial.println("[DEBUG] Got the new WiFi credentials, saving to flash and restarting WiFi");
         // Stop the current AP SSID
         WiFi.disconnect();
         connectWiFi();
-        //_timeclient->begin();
         _settings->debug(13);
         getNTP();
         _settings->debug(14);

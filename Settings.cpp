@@ -1,16 +1,25 @@
 #include "Settings.h"
 
-FlashStorage(fsWiFi, savedWiFi);
-FlashStorage(fsBrightness, savedBrightness);
-FlashStorage(fsNTP, savedNTP);
-FlashStorage(fsPIR, savedPIR);
-FlashStorage(fsLight, savedLight);
-FlashStorage(fsUTCOffset, savedUTCOffset);
-FlashStorage(fsUSB, savedUSB);
-FlashStorage(fsFont, savedFont);
-FlashStorage(fsBackground, savedBackground);
+FlashStorage(fsWiFi, savedWiFi);              // Stores WiFi creds
+FlashStorage(fsBrightness, savedBrightness);  // Stores
+FlashStorage(fsNTP, savedNTP);                // Stores
+FlashStorage(fsNTPPool, savedNTPPool);        // Stores
+FlashStorage(fsPIR, savedPIR);                // Stores
+FlashStorage(fsLight, savedLight);            // Stores 
+FlashStorage(fsUTCOffset, savedUTCOffset);    // Stores UTC Offset
+FlashStorage(fsUSB, savedUSB);                // Stores USB/DC power supply state
+FlashStorage(fsFont, savedFont);              // Stores WebUI font settings
+FlashStorage(fsBackground, savedBackground);  // Stores WebUI background settimgs
 
 Settings::Settings() {}
+
+
+void Settings::begin() {
+  rwSettings(13, 0);
+  for (byte i = 15; i <= 26; i++) {
+    rwSettings(i, 0);
+  }
+}
 
 void Settings::rwSettings(byte setting, bool save) {
   switch (setting) {
@@ -28,7 +37,7 @@ void Settings::rwSettings(byte setting, bool save) {
           Serial.print("Read: ");
           Serial.println(flashNTP);
         } else {
-          Serial.println("No Value!");
+          Serial.println("No flashNTP Value!");
         }
       }
       break;
@@ -46,7 +55,7 @@ void Settings::rwSettings(byte setting, bool save) {
           Serial.print("Read: ");
           Serial.println(flashPIR);
         } else {
-          Serial.println("No Value!");
+          Serial.println("No flashPIR Value!");
         }
       }
       break;
@@ -64,7 +73,7 @@ void Settings::rwSettings(byte setting, bool save) {
           Serial.print("Read: ");
           Serial.println(flashLight);
         } else {
-          Serial.println("No Value!");
+          Serial.println("No flashLight Value!");
         }
       }
       break;
@@ -82,7 +91,7 @@ void Settings::rwSettings(byte setting, bool save) {
           Serial.print("Read: ");
           Serial.println(flashUSB);
         } else {
-          Serial.println("No Value!");
+          Serial.println("No flashUSB Value!");
         }
       }
       break;
@@ -100,7 +109,7 @@ void Settings::rwSettings(byte setting, bool save) {
           Serial.print("Read: ");
           Serial.println(flashBrightness);
         } else {
-          Serial.println("No Value!");
+          Serial.println("No flashBrightness Value!");
         }
       }
       break;
@@ -118,14 +127,52 @@ void Settings::rwSettings(byte setting, bool save) {
           Serial.print("Read: ");
           Serial.println(flashUTCOffset);
         } else {
-          Serial.println("No Value!");
+          Serial.println("No flashUTCOffset Value!");
         }
       }
       break;
     case 22: // Set on/off hour
       
       break;
-    case 23: // Change WebUI Font
+    case 23: // Set NTP Pool
+      savedNTPPool savedntppool;
+      savedntppool = fsNTPPool.read();
+      if (save) {
+        savedntppool.flashNTPPool = flashNTPPool;
+        savedntppool.validNTPPool = true;
+        fsNTPPool.write(savedntppool);
+        Serial.println("[DEBUG] NTP Pool settings have been saved");
+      } else {
+        if (savedntppool.validNTPPool) {
+          flashNTPPool = savedntppool.flashNTPPool;
+          Serial.print("Read: ");
+          Serial.println(flashNTPPool);
+        } else {
+          Serial.println("No NTP Pool Value!");
+        }
+      }
+      switch (flashNTPPool) {
+        case 1:
+          ntpServerName = "africa.pool.ntp.org";
+          break;
+        case 2:
+          ntpServerName = "asia.pool.ntp.org";
+          break;
+        case 3:
+          ntpServerName = "europe.pool.ntp.org";
+          break;
+        case 4:
+          ntpServerName = "north-america.pool.ntp.org";
+          break;
+        case 5:
+          ntpServerName = "oceania.pool.ntp.org";
+          break;
+        case 6:
+          ntpServerName = "south-america.pool.ntp.org";
+          break;
+      }
+      break;
+    case 24: // Change WebUI Font
       savedFont savedfont;
       savedfont = fsFont.read();
       if (save) {
@@ -139,7 +186,7 @@ void Settings::rwSettings(byte setting, bool save) {
           Serial.print("Read: ");
           Serial.println(flashFont);
         } else {
-          Serial.println("No Value!");
+          Serial.println("No flashFont Value!");
         }
       }
       Serial.println(flashFont);
@@ -173,7 +220,7 @@ void Settings::rwSettings(byte setting, bool save) {
           break;
       }
       break;
-    case 24: // Change WebUI Background
+    case 25: // Change WebUI Background
       savedBackground savedbackground;
       savedbackground = fsBackground.read();
       if (save) {
@@ -187,11 +234,11 @@ void Settings::rwSettings(byte setting, bool save) {
           Serial.print("Read: ");
           Serial.println(flashBackground);
         } else {
-          Serial.println("No Value!");
+          Serial.println("No flashBackground Value!");
         }
       }
       break;
-    case 25: // Change WiFi
+    case 26: // Change WiFi
       savedWiFi savedwifi;
       savedwifi = fsWiFi.read();
     
@@ -217,6 +264,9 @@ void Settings::rwSettings(byte setting, bool save) {
 
 void Settings::debug(byte n) {
   switch (n) {
+    case 0:
+      Serial.println("[DEBUG] Load saved settings");
+      break;
     case 1:
       Serial.println("[DEBUG] Begin HV5530");
       break;

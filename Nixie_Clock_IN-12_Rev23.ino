@@ -34,7 +34,7 @@ WiFiServer server(80);
 WiFiUDP ntpUDP;
 
 // Initialise NTP Client
-NTPClient timeclient(ntpUDP, settings.ntpServerName, settings.flashUTCOffset * 3600, 60000);
+NTPClient timeclient(ntpUDP);
 
 // WiFi functions
 WiFiTask wifitask(&nixie, &timetask, &i2c, &timeclient, &server, &settings, &fade, &hv);
@@ -48,6 +48,10 @@ void setup() {
   // Generate random seed
   randomSeed(analogRead(RandomSeed));
 
+  // Load all saved settings from Flash
+  settings.debug(0);
+  settings.begin();
+  
   // Initiate the HV5532 outputs
   settings.debug(1);
   nixie.begin();
