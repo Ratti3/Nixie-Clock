@@ -17,7 +17,8 @@ WiFiTask::WiFiTask(NixieDisplay* nixie, TimeTask* timetask, I2C* i2c, NTPClient*
 
 // Connects WiFi
 void WiFiTask::connectWiFi() {
-
+  
+  _settings->rwSettings(26, 0);
   // Use saved credentials from flash
   if (_settings->noSSID) {
     WiFiFail = 1;
@@ -249,7 +250,7 @@ Serial.println(_settings->flashBackground);
             CP(".revalia {font-family: Revalia;}");
             CP(".slackey {font-family: Slackey;}");
 
-            CP("a {margin: 15px;}");
+            CP("a {margin: 15px; text-decoration: none;}");
             CP("a.o, a.r, a.g, a.b, a.p, a.s, a.menu, a.menu_active {font-family: " + String(_settings->webFont) + ", Verdana; font-weight: bold; font-size: 26px; border-radius: 15px; cursor: pointer; display: inline-block;}");
             CP("a.s {border-radius: 30px;}");
             CP(".o {color: #c92200; border: 1px #e65f44 solid; background: linear-gradient(180deg, #f0cb11 5%, #f2ab1e 100%); text-shadow: 1px 1px 1px #ded17c; box-shadow: inset 1px 1px 2px 0px #f9eca0;}");
@@ -271,7 +272,7 @@ Serial.println(_settings->flashBackground);
             CP(".btn-slide {padding: 9px 0px; width: 400px; display: block; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.16); box-shadow: rgba(0, 0, 0, 0.14) 0px -1px 0px inset;}");
             CP(".btn-icon-footer {padding: 10px 5px; display: block; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.16); box-shadow: rgba(0, 0, 0, 0.14) 0px -1px 0px inset;}");
             CP(".btn-icon-footer svg {vertical-align: middle; position: relative; font-size: 40px;}");
-            CP(".btn-icon-footer {padding: 5px 0px; width: 175px; display: block; text-align: center;}");
+            CP(".btn-text-footer {padding: 5px 0px; width: 175px; display: block; text-align: center;}");
 
             CP(".slide {-webkit-appearance: none; width: 355px; height: 15px; margin: 0px 18px; border-radius: 5px; background: #d3d3d3; outline: none; opacity: 0.7; -webkit-transition: .2s; transition: opacity .2s;}");
             CP(".slide:hover {opacity: 1;}");
@@ -504,7 +505,7 @@ Serial.println(_settings->flashBackground);
             CP("<div class='divTableCell'>");
 
             // 12 Run NTP Sync
-            CP("<a href=\"/12\" class='o'");
+            CP("<a href=\"/12\" class='o'>");
             CP("<span class='btn-icon'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M12 1c6.074 0 11 4.925 11 11 0 1.042-.154 2.045-.425 3h-2.101c.335-.94.526-1.947.526-3 0-4.962-4.037-9-9-9-1.706 0-3.296.484-4.654 1.314l1.857 2.686h-6.994l2.152-7 1.85 2.673c1.683-1.049 3.658-1.673 5.789-1.673zm4.646 18.692c-1.357.826-2.944 1.308-4.646 1.308-4.963 0-9-4.038-9-9 0-1.053.191-2.06.525-3h-2.1c-.271.955-.425 1.958-.425 3 0 6.075 4.925 11 11 11 2.127 0 4.099-.621 5.78-1.667l1.853 2.667 2.152-6.989h-6.994l1.855 2.681zm-6.54-4.7c.485-.514 1.154-.832 1.894-.832s1.408.318 1.894.832l-1.894 2.008-1.894-2.008zm-.874-.927c.709-.751 1.688-1.215 2.768-1.215s2.059.465 2.768 1.216l1.164-1.236c-1.006-1.067-2.396-1.727-3.932-1.727s-2.926.66-3.932 1.727l1.164 1.235zm-2.038-2.163c1.23-1.304 2.929-2.11 4.806-2.11s3.576.807 4.806 2.111l1.194-1.267c-1.535-1.629-3.656-2.636-6-2.636s-4.465 1.007-6 2.636l1.194 1.266z'/></svg></span>");
             CP("<span class='btn-text'>NTP Sync</span>");
             CP("</a>");
@@ -697,17 +698,17 @@ Serial.println(_settings->flashBackground);
             CP("</div></div></div></div>");
 
             CP("<a class='s'><span class='btn-icon-footer' onclick=window.location.href='https://create.arduino.cc/projecthub/Ratti3'><svg width='40' height='40' viewBox='0 0 32 32' fill='currentColor'><path d='M7.844 9C4.039 9 1 12.129 1 16s3.04 7 6.844 7c2.761 0 4.98-1.719 6.531-3.313A19.43 19.43 0 0 0 16 17.782a19.43 19.43 0 0 0 1.625 1.907C19.175 21.28 21.395 23 24.156 23 27.961 23 31 19.871 31 16s-3.04-7-6.844-7c-2.761 0-4.98 1.719-6.531 3.313A19.43 19.43 0 0 0 16 14.219a17.121 17.121 0 0 0-1.563-1.906C12.899 10.714 10.652 9 7.845 9zm0 2c1.972 0 3.808 1.285 5.156 2.688 1.11 1.152 1.523 1.94 1.75 2.312-.23.371-.688 1.156-1.813 2.313C11.57 19.718 9.75 21 7.845 21 5.117 21 3 18.852 3 16s2.117-5 4.844-5zm16.312 0C26.883 11 29 13.148 29 16s-2.117 5-4.844 5c-1.906 0-3.726-1.281-5.093-2.688-1.125-1.156-1.583-1.94-1.813-2.312.23-.371.688-1.156 1.813-2.313C20.43 12.281 22.25 11 24.155 11zM23 13v2h-2v2h2v2h2v-2h2v-2h-2v-2zM5 15v2h6v-2z'/></svg></span>");
-            CP("<span class='btn-icon-footer' onclick=window.location.href='https://create.arduino.cc/projecthub/Ratti3'>Arduino</span></a>");
+            CP("<span class='btn-text-footer' onclick=window.location.href='https://create.arduino.cc/projecthub/Ratti3'>Arduino</span></a>");
             CP("<a class='s'><span class='btn-icon-footer' onclick=window.location.href='https://github.com/ratti3'><svg width='40' height='40' viewBox='0 0 24 24' fill='currentColor'><path d='M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z'/></svg></span>");
-            CP("<span class='btn-icon-footer' onclick=window.location.href='https://github.com/ratti3'>GitHub</span></a>");
+            CP("<span class='btn-text-footer' onclick=window.location.href='https://github.com/ratti3'>GitHub</span></a>");
             CP("<a class='s'><span class='btn-icon-footer' onclick=window.location.href='https://easyeda.com/ratti3'><svg width='40' height='40' viewBox='0 0 24 24' fill='currentColor'><path d='M5.829 6c-.412 1.165-1.524 2-2.829 2-1.656 0-3-1.344-3-3s1.344-3 3-3c1.305 0 2.417.835 2.829 2h13.671c2.484 0 4.5 2.016 4.5 4.5s-2.016 4.5-4.5 4.5h-4.671c-.412 1.165-1.524 2-2.829 2-1.305 0-2.417-.835-2.829-2h-4.671c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5h13.671c.412-1.165 1.524-2 2.829-2 1.656 0 3 1.344 3 3s-1.344 3-3 3c-1.305 0-2.417-.835-2.829-2h-13.671c-2.484 0-4.5-2.016-4.5-4.5s2.016-4.5 4.5-4.5h4.671c.412-1.165 1.524-2 2.829-2 1.305 0 2.417.835 2.829 2h4.671c1.38 0 2.5-1.12 2.5-2.5s-1.12-2.5-2.5-2.5h-13.671zm6.171 5c.552 0 1 .448 1 1s-.448 1-1 1-1-.448-1-1 .448-1 1-1z'/></svg></span>");
-            CP("<span class='btn-icon-footer' onclick=window.location.href='https://easyeda.com/ratti3'>EasyEDA</span></a>");
+            CP("<span class='btn-text-footer' onclick=window.location.href='https://easyeda.com/ratti3'>EasyEDA</span></a>");
             CP("<a class='s'><span class='btn-icon-footer' onclick=window.location.href='https://youtube.com/ratti3'><svg width='40' height='40' viewBox='0 0 24 24' fill='currentColor'><path d='M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm4.441 16.892c-2.102.144-6.784.144-8.883 0-2.276-.156-2.541-1.27-2.558-4.892.017-3.629.285-4.736 2.558-4.892 2.099-.144 6.782-.144 8.883 0 2.277.156 2.541 1.27 2.559 4.892-.018 3.629-.285 4.736-2.559 4.892zm-6.441-7.234l4.917 2.338-4.917 2.346v-4.684z'/></svg></span>");
-            CP("<span class='btn-icon-footer' onclick=window.location.href='https://youtube.com/ratti3'>YouTube</span></a>");
+            CP("<span class='btn-text-footer' onclick=window.location.href='https://youtube.com/ratti3'>YouTube</span></a>");
             CP("<a class='s'><span class='btn-icon-footer' onclick=window.location.href='https://ratti3.blogspot.com'><svg width='40' height='40' viewBox='0 0 24 24' fill='currentColor'><path d='M15.5 14.625c0 .484-.387.875-.864.875h-5.273c-.477 0-.863-.392-.863-.875s.387-.875.863-.875h5.272c.478 0 .865.391.865.875zm-6.191-4.375h2.466c.448 0 .809-.392.809-.875s-.361-.875-.81-.875h-2.465c-.447 0-.809.392-.809.875s.362.875.809.875zm14.691 1.75c0 6.627-5.373 12-12 12s-12-5.373-12-12 5.373-12 12-12 12 5.373 12 12zm-5-1.039c0-.383-.311-.692-.691-.692h-1.138c-.583 0-.69-.446-.69-.996-.001-2.36-1.91-4.273-4.265-4.273h-2.952c-2.355 0-4.264 1.913-4.264 4.272v5.455c0 2.36 1.909 4.273 4.264 4.273h5.474c2.353 0 4.262-1.913 4.262-4.272v-3.767z'/></svg></span>");
-            CP("<span class='btn-icon-footer' onclick=window.location.href='https://ratti3.blogspot.com'>Blogger</span></a>");
+            CP("<span class='btn-text-footer' onclick=window.location.href='https://ratti3.blogspot.com'>Blogger</span></a>");
             CP("<a class='s'><span class='btn-icon-footer' onclick=window.location.href='https://hackaday.io/Ratti3'><svg width='40' height='40' viewBox='0 0 24 24' fill='currentColor'><path d='M12 3.385c-4.681 0-8.475 3.794-8.475 8.475 0 3.229 1.818 6.019 4.475 7.449v2.582c.672.906 2 1.109 2 1.109v-2h1v1.999h2v-1.999h1v2s1.328-.203 2-1.109v-2.582c2.657-1.431 4.475-4.22 4.475-7.449 0-4.681-3.794-8.475-8.475-8.475zm-4 11.615c-1.381 0-2.5-1.119-2.5-2.5 0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5c0 1.381-1.119 2.5-2.5 2.5zm2 2l2-2.541 2 2.541h-4zm6-2c-1.38 0-2.5-1.119-2.5-2.5 0-1.38 1.12-2.5 2.5-2.5 1.381 0 2.5 1.12 2.5 2.5 0 1.381-1.119 2.5-2.5 2.5zm4.54 2.904l3.46 3.46-2.636 2.636-3.48-3.48c1.035-.705 1.931-1.595 2.656-2.616zm-17.2-11.928l-3.34-3.339 2.636-2.637 3.32 3.32c-1.021.724-1.911 1.621-2.616 2.656zm14.704-2.656l3.32-3.32 2.636 2.637-3.34 3.339c-.705-1.035-1.595-1.932-2.616-2.656zm-11.928 17.2l-3.48 3.48-2.636-2.636 3.46-3.46c.725 1.021 1.621 1.911 2.656 2.616z'/></svg></span>");
-            CP("<span class='btn-icon-footer' onclick=window.location.href='https://hackaday.io/Ratti3'>Hackaday</span></a>");
+            CP("<span class='btn-text-footer' onclick=window.location.href='https://hackaday.io/Ratti3'>Hackaday</span></a>");
             CP("<h3>&copy; 2021 : Ratti3 Technologies Corp</h3>");
             CP("</div></body></html>");
             CPL();
