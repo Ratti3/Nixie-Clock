@@ -2,7 +2,6 @@
 #define I2C_h
 
 #include "Arduino.h"
-//#include <Wire.h>
 #include "Globals.h"
 #include "Settings.h"
 #include "NixieDisplay.h"

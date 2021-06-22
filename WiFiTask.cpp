@@ -247,8 +247,6 @@ void WiFiTask::clientServer() {
                 _settings->webFont = "Audiowide";
                 break;
             }
-            Serial.println(_settings->webFont);
-            Serial.println(_settings->flashFont);
 
             // Set the WebUI background based on the saved setting
             switch (_settings->flashBackground) {
@@ -597,8 +595,8 @@ void WiFiTask::clientServer() {
             // 22 Set On/Off Hour
             CP("<form name='onoffhour' action='22' method='get'><a class='o'>");
             CP("<span class='btn-icon' onclick='onoffhour.submit()'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M15.91 13.34l2.636-4.026-.454-.406-3.673 3.099c-.675-.138-1.402.068-1.894.618-.736.823-.665 2.088.159 2.824.824.736 2.088.665 2.824-.159.492-.55.615-1.295.402-1.95zm-3.91-10.646v-2.694h4v2.694c-1.439-.243-2.592-.238-4 0zm8.851 2.064l1.407-1.407 1.414 1.414-1.321 1.321c-.462-.484-.964-.927-1.5-1.328zm-18.851 4.242h8v2h-8v-2zm-2 4h8v2h-8v-2zm3 4h7v2h-7v-2zm21-3c0 5.523-4.477 10-10 10-2.79 0-5.3-1.155-7.111-3h3.28c1.138.631 2.439 1 3.831 1 4.411 0 8-3.589 8-8s-3.589-8-8-8c-1.392 0-2.693.369-3.831 1h-3.28c1.811-1.845 4.321-3 7.111-3 5.523 0 10 4.477 10 10z'/></svg></span>");
-            CP("<span class='btn-slide'><input type='range' id='o' name='o' value='6' min='5' max='8' oninput='this.nextElementSibling.value = this.value' class='slide'><output>1</output> : On Hour</span></span>");
-            CP("<span class='btn-slide'><input type='range' id='x' name='x' value='23' min='21' max='23' oninput='this.nextElementSibling.value = this.value' class='slide'><output>1</output> : Off Hour</span></span>");
+            CP("<span class='btn-slide'><input type='range' id='o' name='o' value='" + String(_settings->flashOnHour) + "' min='5' max='8' oninput='this.nextElementSibling.value = this.value' class='slide'><output>" + String(_settings->flashOnHour) + "</output> : On Hour</span></span>");
+            CP("<span class='btn-slide'><input type='range' id='x' name='x' value='" + String(_settings->flashOffHour) + "' min='21' max='23' oninput='this.nextElementSibling.value = this.value' class='slide'><output>" + String(_settings->flashOffHour) + "</output> : Off Hour</span></span>");
             CP("<span class='btn-text' onclick='onoffhour.submit()'>Set On/Off Hour</span>");
             CP("</a></form>");
 
@@ -893,6 +891,8 @@ void WiFiTask::clientServer() {
           _settings->year = currentLine.substring(currentLine.indexOf("y=") + 2, currentLine.lastIndexOf(' ')).toInt();
           setting = 21;
         } else if (currentLine.startsWith("GET /22")) {      // Set on/off hour
+          _settings->flashOnHour = currentLine.substring(currentLine.indexOf("o=") + 2, currentLine.indexOf("x=") - 1).toInt();
+          _settings->flashOffHour = currentLine.substring(currentLine.indexOf("x=") + 2, currentLine.lastIndexOf(' ')).toInt();
           setting = 22;
         } else if (currentLine.startsWith("GET /23")) {      // Set NTP pool
           _settings->flashNTPPool = currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')).toInt();
@@ -963,7 +963,7 @@ void WiFiTask::clientServer() {
         _i2c->adjustDateTime(1);
         break;
       case 22: // Set on/off hour
-      
+        _settings->rwSettings(22, 1);
         break;
       case 23: // Set NTP Pool
         _settings->rwSettings(23, 1);

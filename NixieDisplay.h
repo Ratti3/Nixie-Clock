@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include "Globals.h"
+#include "Settings.h"
 
 // Location of each segment in each tube the 64 bit shift register
 const byte dotOne        = 63;
@@ -18,7 +19,7 @@ const byte secondUnits[] = {29,20,21,22,23,24,25,26,27,28};
 
 class NixieDisplay {
   public:
-    NixieDisplay();
+    NixieDisplay(Settings* settings);
     void begin();
     void enableSegment(byte segment);
     void enableSegments(byte tube, byte segment);
@@ -28,7 +29,8 @@ class NixieDisplay {
     void disableAllSegments();
     void updateDisplay();
     void runSlotMachine(byte c);
-  private: 
+  private:
+    Settings* _settings;
     // Frame of data to be shifted into 64 bit HV shift register
     byte _frame[8]; // 8 bytes = 64 bits = 6 digits @ 10 bits + 2 dots @ 1 bit + 2 unused bits
 };

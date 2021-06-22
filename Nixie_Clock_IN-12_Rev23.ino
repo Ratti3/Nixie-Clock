@@ -9,14 +9,14 @@ Adafruit_BME280 bme;
 // VEML7700 object (SCL/SDA Pins 4 and 5)
 Adafruit_VEML7700 veml = Adafruit_VEML7700();
 
+// Variables and settings
+Settings settings;
+
 // HV shift registers
-NixieDisplay nixie;
+NixieDisplay nixie(&settings);
 
 // DC booster enable pin control
 HV hv;
-
-// Variables and settings
-Settings settings;
 
 // PWM fade functions
 Fade fade(&settings);

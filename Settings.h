@@ -21,17 +21,20 @@ typedef struct {bool valid; char flash_SSID[50]; char flash_PASS[50];} savedWiFi
 typedef struct {bool validBrightness; byte flashBrightness;} savedBrightness;
 typedef struct {bool validNTP; bool flashNTP;} savedNTP;
 typedef struct {bool validNTPPool; byte flashNTPPool;} savedNTPPool;
+
+typedef struct {bool validOnOffHour; byte flashOnHour; byte flashOffHour;} savedOnOffHour;
+
 typedef struct {bool validPIR; bool flashPIR;} savedPIR;
 typedef struct {bool validLight; bool flashLight;} savedLight;
 typedef struct {bool validUSB; bool flashUSB;} savedUSB;
 typedef struct {bool validFont; byte flashFont;} savedFont;
 typedef struct {bool validBackground; byte flashBackground;} savedBackground;
-typedef struct {bool validUTCOffset; byte flashUTCOffset;} savedUTCOffset;
-typedef struct {bool validColon; bool flashColon;} savedColon;
-typedef struct {bool validLED1; bool flashLED1;} savedLED1;
-typedef struct {bool validLED2; bool flashLED2;} savedLED2;
-typedef struct {bool validLED3; bool flashLED3;} savedLED3;
-typedef struct {bool validSpin; bool flashSpin;} savedSpin;
+typedef struct {bool validUTCOffset; int flashUTCOffset;} savedUTCOffset;
+typedef struct {bool validColon; byte flashColon;} savedColon;
+typedef struct {bool validLED1; byte flashLED1;} savedLED1;
+typedef struct {bool validLED2; byte flashLED2;} savedLED2;
+typedef struct {bool validLED3; byte flashLED3;} savedLED3;
+typedef struct {bool validSpin; byte flashSpin;} savedSpin;
 
 class Settings {
   public:
@@ -65,9 +68,11 @@ class Settings {
     String flash_PASS;
 
     // Flash EEPROM initial save values
-    byte flashBrightness = 100;                        // PWM HV5530 brightness level 1 - 255 (Note: 0 would turn off the Nixies)
+    byte flashBrightness = 255;                        // PWM HV5530 brightness level 1 - 255 (Note: 0 would turn off the Nixies but leave the HV on)
     bool flashNTP = 1;                                 // Enable/Disable NTP
     byte flashNTPPool = 3;                             // Stores the NTP pool address (1 = africa, 2 = asia, 3 = europe, 4 = north america, 5 = oceania, 6 = south america)
+    byte flashOnHour = 6;
+    byte flashOffHour = 23;
     bool flashPIR = 1;                                 // Enable/Disable PIR
     bool flashLight = 1;                               // Enable/Disable Light Sensor
     bool flashUSB = 1;                                 // Set power supply mode, setting to 1 enables the 5v to 12v booster for the HV5530

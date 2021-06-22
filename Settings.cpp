@@ -4,6 +4,7 @@ FlashStorage(fsWiFi, savedWiFi);              // Stores WiFi creds
 FlashStorage(fsBrightness, savedBrightness);  // Stores
 FlashStorage(fsNTP, savedNTP);                // Stores
 FlashStorage(fsNTPPool, savedNTPPool);        // Stores
+FlashStorage(fsOnOffHour, savedOnOffHour);    // 
 FlashStorage(fsPIR, savedPIR);                // Stores
 FlashStorage(fsLight, savedLight);            // Stores 
 FlashStorage(fsUTCOffset, savedUTCOffset);    // Stores UTC Offset
@@ -156,7 +157,25 @@ void Settings::rwSettings(byte setting, bool save) {
       }
       break;
     case 22: // Set on/off hour
-      
+      savedOnOffHour savedonoffhour;
+      savedonoffhour = fsOnOffHour.read();
+      if (save) {
+        savedonoffhour.flashOnHour = flashOnHour;
+        savedonoffhour.flashOffHour = flashOffHour;
+        savedonoffhour.validOnOffHour = true;
+        fsOnOffHour.write(savedonoffhour);
+        Serial.println("[DEBUG] On/Off Hour settings have been saved");
+      } else {
+        if (savedonoffhour.validOnOffHour) {
+          flashOnHour = savedonoffhour.flashOnHour;
+          flashOffHour = savedonoffhour.flashOffHour;
+          Serial.print("Read: ");
+          Serial.println(flashOnHour);
+          Serial.println(flashOffHour);
+        } else {
+          Serial.println("No flashOnHour/flashOffHour Value!");
+        }
+      }
       break;
     case 23: // Set NTP Pool
       savedNTPPool savedntppool;

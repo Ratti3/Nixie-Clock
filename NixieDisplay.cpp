@@ -1,6 +1,8 @@
 #include "NixieDisplay.h"
 
-NixieDisplay::NixieDisplay() {}
+NixieDisplay::NixieDisplay(Settings* settings) {
+  _settings = settings;
+}
 
 void NixieDisplay::begin() {
   // HV5530 Pins
@@ -8,7 +10,7 @@ void NixieDisplay::begin() {
   pinMode(PIN_HV_BL, OUTPUT);
   pinMode(PIN_HV_DATA, OUTPUT);
   pinMode(PIN_HV_CLK, OUTPUT);
-  analogWrite(PIN_HV_BL, 255);
+  analogWrite(PIN_HV_BL, _settings->flashBrightness);
 
   // Transistor controlled IN-12B Decimal Points (tubes 3 and 4)
   pinMode(PIN_DOT_THREE, OUTPUT);
