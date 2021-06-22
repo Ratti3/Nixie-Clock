@@ -9,20 +9,44 @@ FlashStorage(fsLight, savedLight);            // Stores
 FlashStorage(fsUTCOffset, savedUTCOffset);    // Stores UTC Offset
 FlashStorage(fsUSB, savedUSB);                // Stores USB/DC power supply state
 FlashStorage(fsFont, savedFont);              // Stores WebUI font settings
-FlashStorage(fsBackground, savedBackground);  // Stores WebUI background settimgs
+FlashStorage(fsBackground, savedBackground);  // Stores WebUI background settings
+FlashStorage(fsColon, savedColon);            // Stores Colon LED PWM value
+FlashStorage(fsLED1, savedLED1);              // Stores Switch LED1 PWM value
+FlashStorage(fsLED2, savedLED2);              // Stores Switch LED2 PWM value
+FlashStorage(fsLED3, savedLED3);              // Stores Switch LED3 PWM value
+FlashStorage(fsSpin, savedSpin);              // Stores Nixie Hourly Spin Cycles
 
 Settings::Settings() {}
 
-
+// Load all saved settings from flash
 void Settings::begin() {
+  rwSettings(10, 0);
   rwSettings(13, 0);
-  for (byte i = 15; i <= 26; i++) {
+  for (byte i = 15; i <= 28; i++) {
     rwSettings(i, 0);
   }
 }
 
 void Settings::rwSettings(byte setting, bool save) {
   switch (setting) {
+    case 10: // Set Nixie Hourly Spin Cycles
+      savedSpin savedspin;
+      savedspin = fsSpin.read();
+      if (save) {
+        savedspin.flashSpin = flashSpin;
+        savedspin.validSpin = true;
+        fsSpin.write(savedspin);
+        Serial.println("[DEBUG] Spin settings have been saved");
+      } else {
+        if (savedspin.validSpin) {
+          flashSpin = savedspin.flashSpin;
+          Serial.print("Read: ");
+          Serial.println(flashSpin);
+        } else {
+          Serial.println("No flashSpin Value!");
+        }
+      }
+      break;
     case 13: // Enable/Disable NTP
       savedNTP savedntp;
       savedntp = fsNTP.read();
@@ -259,6 +283,58 @@ void Settings::rwSettings(byte setting, bool save) {
         }
       }
       break;
+    case 27:
+      savedColon savedcolon;
+      savedcolon = fsColon.read();
+      if (save) {
+        savedcolon.flashColon = flashColon;
+        savedcolon.validColon = true;
+        fsColon.write(savedcolon);
+        Serial.println("[DEBUG] Colon LED settings have been saved");
+      } else {
+        if (savedcolon.validColon) {
+          flashColon = savedcolon.flashColon;
+          Serial.print("Read flashColon: ");
+          Serial.println(flashColon);
+        } else {
+          Serial.println("No flashColon Value!");
+        }
+      }
+      break;
+    case 28:
+      savedLED1 savedled1;
+      savedLED2 savedled2;
+      savedLED3 savedled3;
+      savedled1 = fsLED1.read();
+      savedled2 = fsLED2.read();
+      savedled3 = fsLED3.read();
+      if (save) {
+        savedled1.flashLED1 = flashLED1;
+        savedled2.flashLED2 = flashLED2;
+        savedled3.flashLED3 = flashLED3;
+        savedled1.validLED1 = true;
+        savedled2.validLED2 = true;
+        savedled3.validLED3 = true;
+        fsLED1.write(savedled1);
+        Serial.println("[DEBUG] LED1 settings have been saved");
+        fsLED2.write(savedled2);
+        Serial.println("[DEBUG] LED2 settings have been saved");
+        fsLED3.write(savedled3);
+        Serial.println("[DEBUG] LED3 settings have been saved");
+      } else {
+        if (savedled1.validLED1 && savedled2.validLED2 && savedled3.validLED3) {
+          flashLED1 = savedled1.flashLED1;
+          flashLED2 = savedled2.flashLED2;
+          flashLED3 = savedled3.flashLED3;
+          Serial.print("Read: ");
+          Serial.println(flashLED1);
+          Serial.println(flashLED2);
+          Serial.println(flashLED3);
+        } else {
+          Serial.println("No flashLED1-3 Value!");
+        }
+      }
+    break;
   }
 }
 

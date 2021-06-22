@@ -27,6 +27,11 @@ typedef struct {bool validUSB; bool flashUSB;} savedUSB;
 typedef struct {bool validFont; byte flashFont;} savedFont;
 typedef struct {bool validBackground; byte flashBackground;} savedBackground;
 typedef struct {bool validUTCOffset; byte flashUTCOffset;} savedUTCOffset;
+typedef struct {bool validColon; bool flashColon;} savedColon;
+typedef struct {bool validLED1; bool flashLED1;} savedLED1;
+typedef struct {bool validLED2; bool flashLED2;} savedLED2;
+typedef struct {bool validLED3; bool flashLED3;} savedLED3;
+typedef struct {bool validSpin; bool flashSpin;} savedSpin;
 
 class Settings {
   public:
@@ -62,13 +67,18 @@ class Settings {
     // Flash EEPROM initial save values
     byte flashBrightness = 100;                        // PWM HV5530 brightness level 1 - 255 (Note: 0 would turn off the Nixies)
     bool flashNTP = 1;                                 // Enable/Disable NTP
-    byte flashNTPPool = 3;
+    byte flashNTPPool = 3;                             // Stores the NTP pool address (1 = africa, 2 = asia, 3 = europe, 4 = north america, 5 = oceania, 6 = south america)
     bool flashPIR = 1;                                 // Enable/Disable PIR
     bool flashLight = 1;                               // Enable/Disable Light Sensor
     bool flashUSB = 1;                                 // Set power supply mode, setting to 1 enables the 5v to 12v booster for the HV5530
     byte flashFont = 1;                                // The WebUI font
     byte flashBackground = 4;                          // The WebUI background
     int flashUTCOffset = 1;                            // UTC offset in hours
+    byte flashColon = 255;                             // Colon LED Brightness via PWM
+    byte flashLED1 = 200;                              // Switch 1 LED Brightness via PWM
+    byte flashLED2 = 90;                               // Switch 2 LED Brightness via PWM
+    byte flashLED3 = 128;                              // Switch 3 LED Brightness via PWM
+    byte flashSpin = 1;                                // Nixie Hourly Spin Cycles
 
     const char* ntpServerName = "europe.pool.ntp.org"; // Stores the NTP pool to query, changed via flashNTPPool
     

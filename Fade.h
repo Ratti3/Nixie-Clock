@@ -8,9 +8,11 @@
 class Fade {
   public:
     Fade(Settings* settings);
+    void start();
     void fadeIn();
     void fadeOut();
     void setBrightness();
+    void setSwitchLEDBrightness();
   private:
     Settings* _settings;
 };

@@ -181,8 +181,6 @@ void WiFiTask::displayIP() {
 void WiFiTask::clientServer() {
   // Holds run state of the clicked buttons
   byte setting = 0;
-  // Holds the number of times to spin the slot machine
-  byte repeat = 0;
 
   // Listen for incoming client connections
   WiFiClient client = _server->available();   
@@ -343,8 +341,8 @@ Serial.println(_settings->flashBackground);
             CP("<span class='menu-icon'><svg width='16' height='16' viewBox='2 2 16 16' fill='currentColor'><path fill-rule='evenodd' d='M4.5 13.5A.5.5 0 015 13h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 9h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 5h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5z' clip-rule='evenodd'/></svg></span>");
             CP("<span class='menu-text'>WiFi</span></a>");
 
-            // Settings menu [10, 14 & 18]
-            if (setting == 10 || setting == 14 || setting == 18 || (!WiFiFail && setting == 0)) {
+            // Settings menu [10, 14, 18, 27 & 28]
+            if (setting == 10 || setting == 14 || setting == 18 || setting == 27 || setting == 28 || (!WiFiFail && setting == 0)) {
               CP("<a class='menu_active' onclick='displaySettings(1)' id='B2'>");
             } else {
               CP("<a class='menu' onclick='displaySettings(1)' id='B2'>");
@@ -361,8 +359,8 @@ Serial.println(_settings->flashBackground);
             CP("<span class='menu-icon'><svg width='16' height='16' viewBox='2 2 16 16' fill='currentColor'><path fill-rule='evenodd' d='M4.5 13.5A.5.5 0 015 13h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 9h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 5h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5z' clip-rule='evenodd'/></svg></span>");
             CP("<span class='menu-text'>Sensors</span></a>");
 
-            // Date/Time menu [12, 13, 19, 20, 21, 22]
-            if (setting == 12 || setting == 13 || (setting >= 19 && setting <= 22)) {
+            // Date/Time menu [12, 13, 19, 20, 21, 22 & 23]
+            if (setting == 12 || setting == 13 || (setting >= 19 && setting <= 23)) {
               CP("<a class='menu_active' onclick='displaySettings(3)' id='B4'>");
             } else {
               CP("<a class='menu' onclick='displaySettings(3)' id='B4'>");
@@ -410,10 +408,10 @@ Serial.println(_settings->flashBackground);
 
             CP("</div></div></div></div>");
 
-            // Settings menu [10, 14 & 18]
+            // Settings menu [10, 14, 18, 27 & 28]
             CP("<div class='divTable'>");
             CP("<div class='divTableBody'>");
-            if ((!WiFiFail && setting == 0) || setting == 10 || setting == 14 || setting == 18) {
+            if ((!WiFiFail && setting == 0) || setting == 10 || setting == 14 || setting == 18 || setting == 27 || setting == 28) {
               CP("<div class='divTableRow' id='M2' style='display:block;'>");
             } else {
               CP("<div class='divTableRow' id='M2' style='display:none;'>");
@@ -423,10 +421,11 @@ Serial.println(_settings->flashBackground);
             // 10 Run Slot Machine
             CP("<form name='slot' action='10' method='get'><a class='o'>");
             CP("<span class='btn-icon' onclick='slot.submit()'><svg width='66' height='66' viewBox='0 0 50 50' fill='currentColor'><path d='M49 10.489c.604-.457 1-1.173 1-1.989a2.5 2.5 0 1 0-5 0 2.49 2.49 0 0 0 1 1.989V26h-9v8h10v-.297A3.994 3.994 0 0 0 49.5 30c0-.691-.191-1.332-.5-1.899V10.489zM6 17c1.021 0 1.73.172 3 0 0 0-4.016 2.666-4.016 6H10s.006-5.554 3-9l-1-1s-2 1-4 0c0 0-2 0-4 1v-1H3v6h1s0-2 2-2zm14 0c1.021 0 1.73.172 3 0 0 0-4.016 2.666-4.016 6H24s.006-5.554 3-9l-1-1s-2 1-4 0c0 0-2 0-4 1v-1h-1v6h1s0-2 2-2zM38 7V5H25.88c-.456-2.002-2.239-3.5-4.38-3.5S17.576 2.998 17.12 5H5v2H0v41h44V7h-6zm-22 4h12v14H16V11zM2 11h12v14H2V11zm36 32H5v-7h33v7zm4-18H30V11h12v14zm-8-8c1.021 0 1.73.172 3 0 0 0-4.016 2.666-4.016 6H38s.006-5.554 3-9l-1-1s-2 1-4 0c0 0-2 0-4 1v-1h-1v6h1s0-2 2-2z'/></svg></span>");
-            CP("<span class='btn-slide'><input type='range' id='v' name='v' value='5' min='1' max='20' oninput='this.nextElementSibling.value = this.value' class='slide'><output>5</output> : Spin Cycles</span>");
-            CP("<span class='btn-text' onclick='slot.submit()'>Run Slot Machine</span>");
+            CP("<span class='btn-slide'><input type='range' id='v' name='v' value='" + String(_settings->flashSpin) + "' min='1' max='5' oninput='this.nextElementSibling.value = this.value' class='slide'><output>" + String(_settings->flashSpin) + "</output></span>");
+            CP("<span class='btn-text' onclick='slot.submit()'>Set Hourly Spins</span>");
             CP("</a></form>");
 
+            // 14 Enable/Disable display
             CP("<form name='displayon' action='14' method='get'><a class='g' onclick='displayon.submit()'>");
             CP("<span class='btn-icon'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M19 6.734c0 4.164-3.75 6.98-3.75 10.266h-1.992c.001-2.079.996-3.826 1.968-5.513.913-1.585 1.774-3.083 1.774-4.753 0-3.108-2.518-4.734-5.004-4.734-2.482 0-4.996 1.626-4.996 4.734 0 1.67.861 3.168 1.774 4.753.972 1.687 1.966 3.434 1.967 5.513h-1.991c0-3.286-3.75-6.103-3.75-10.266 0-4.343 3.498-6.734 6.996-6.734 3.502 0 7.004 2.394 7.004 6.734zm-4 11.766c0 .276-.224.5-.5.5h-5c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h5c.276 0 .5.224.5.5zm0 2c0 .276-.224.5-.5.5h-5c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h5c.276 0 .5.224.5.5zm-1.701 3.159c-.19.216-.465.341-.752.341h-1.094c-.287 0-.562-.125-.752-.341l-1.451-1.659h5.5l-1.451 1.659zm-3.629-16.347l-1.188-.153c.259-1.995 1.5-3.473 3.518-3.847l.219 1.177c-1.947.361-2.433 1.924-2.549 2.823z'/></svg></span>");
             CP("<span class='btn-text'>Enable Display</span>");
@@ -437,13 +436,29 @@ Serial.println(_settings->flashBackground);
             CP("<span class='btn-text'>Disable Display</span>");
             CP("</a></form>");
 
+            // 27 Colon LED brightness
+            CP("<form name='colon' action='27' method='get'><a class='o'>");
+            CP("<span class='btn-icon' onclick='colon.submit()'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M17 12c0 2.762-2.238 5-5 5s-5-2.238-5-5 2.238-5 5-5 5 2.238 5 5zm-9.184-5.599l-3.594-3.594-1.414 1.414 3.594 3.595c.402-.537.878-1.013 1.414-1.415zm4.184-1.401c.34 0 .672.033 1 .08v-5.08h-2v5.08c.328-.047.66-.08 1-.08zm5.598 2.815l3.594-3.595-1.414-1.414-3.594 3.595c.536.402 1.012.878 1.414 1.414zm-12.598 4.185c0-.34.033-.672.08-1h-5.08v2h5.08c-.047-.328-.08-.66-.08-1zm11.185 5.598l3.594 3.593 1.415-1.414-3.594-3.594c-.403.537-.879 1.013-1.415 1.415zm-9.784-1.414l-3.593 3.593 1.414 1.414 3.593-3.593c-.536-.402-1.011-.877-1.414-1.414zm12.519-5.184c.047.328.08.66.08 1s-.033.672-.08 1h5.08v-2h-5.08zm-6.92 8c-.34 0-.672-.033-1-.08v5.08h2v-5.08c-.328.047-.66.08-1 .08z'/></svg></span>");
+            CP("<span class='btn-slide'><input type='range' id='v' name='v' value='" + String(_settings->flashColon) + "' min='0' max='255' oninput='this.nextElementSibling.value = this.value' class='slide'><output>" + String(_settings->flashColon) + "</output></span>");
+            CP("<span class='btn-text' onclick='colon.submit()'>Colon LED Brightness</span>");
+            CP("</a></form>");
+
             CP("</div><div class='divTableCell'>");
 
             // 18 Set Brightness
             CP("<form name='brightness' action='18' method='get'><a class='o'>");
             CP("<span class='btn-icon' onclick='brightness.submit()'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M12 9c1.654 0 3 1.346 3 3s-1.346 3-3 3v-6zm0-2c-2.762 0-5 2.238-5 5s2.238 5 5 5 5-2.238 5-5-2.238-5-5-5zm-4.184-.599l-3.593-3.594-1.415 1.414 3.595 3.595c.401-.537.876-1.013 1.413-1.415zm4.184-1.401c.34 0 .672.033 1 .08v-5.08h-2v5.08c.328-.047.66-.08 1-.08zm5.598 2.815l3.595-3.595-1.414-1.414-3.595 3.595c.537.402 1.012.878 1.414 1.414zm-12.598 4.185c0-.34.033-.672.08-1h-5.08v2h5.08c-.047-.328-.08-.66-.08-1zm11.185 5.598l3.594 3.593 1.415-1.414-3.594-3.593c-.403.536-.879 1.012-1.415 1.414zm-9.784-1.414l-3.593 3.593 1.414 1.414 3.593-3.593c-.536-.402-1.011-.877-1.414-1.414zm12.519-5.184c.047.328.08.66.08 1s-.033.672-.08 1h5.08v-2h-5.08zm-6.92 8c-.34 0-.672-.033-1-.08v5.08h2v-5.08c-.328.047-.66.08-1 .08z'/></svg></span>");
-            CP("<span class='btn-slide'><input type='range' id='v' name='v' value='100' min='1' max='255' oninput='this.nextElementSibling.value = this.value' class='slide'><output>100</output></span>");
-            CP("<span class='btn-text' onclick='brightness.submit()'>Set Brightness</span>");
+            CP("<span class='btn-slide'><input type='range' id='v' name='v' value='" + String(_settings->flashBrightness) + "' min='1' max='255' oninput='this.nextElementSibling.value = this.value' class='slide'><output>" + String(_settings->flashBrightness) + "</output></span>");
+            CP("<span class='btn-text' onclick='brightness.submit()'>Nixie Brightness</span>");
+            CP("</a></form>");
+
+            //28 Switch brightness
+            CP("<form name='led' action='28' method='get'><a class='o'>");
+            CP("<span class='btn-icon' onclick='led.submit()'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M12 9c1.654 0 3 1.346 3 3s-1.346 3-3 3-3-1.346-3-3 1.346-3 3-3zm0-2c-2.762 0-5 2.238-5 5s2.238 5 5 5 5-2.238 5-5-2.238-5-5-5zm-4.184-.599l-3.593-3.594-1.415 1.414 3.595 3.595c.401-.537.876-1.013 1.413-1.415zm4.184-1.401c.34 0 .672.033 1 .08v-5.08h-2v5.08c.328-.047.66-.08 1-.08zm5.598 2.815l3.595-3.595-1.414-1.414-3.595 3.595c.537.402 1.012.878 1.414 1.414zm-12.598 4.185c0-.34.033-.672.08-1h-5.08v2h5.08c-.047-.328-.08-.66-.08-1zm11.185 5.598l3.594 3.593 1.415-1.414-3.594-3.593c-.403.536-.879 1.012-1.415 1.414zm-9.784-1.414l-3.593 3.593 1.414 1.414 3.593-3.593c-.536-.402-1.011-.877-1.414-1.414zm12.519-5.184c.047.328.08.66.08 1s-.033.672-.08 1h5.08v-2h-5.08zm-6.92 8c-.34 0-.672-.033-1-.08v5.08h2v-5.08c-.328.047-.66.08-1 .08z'/></svg></span>");
+            CP("<span class='btn-slide'><input type='range' id='r' name='r' value='" + String(_settings->flashLED1) + "' min='0' max='255' oninput='this.nextElementSibling.value = this.value' class='slide'><output>" + String(_settings->flashLED1) + "</output> : LED 1</span>");
+            CP("<span class='btn-slide'><input type='range' id='g' name='g' value='" + String(_settings->flashLED2) + "' min='0' max='255' oninput='this.nextElementSibling.value = this.value' class='slide'><output>" + String(_settings->flashLED2) + "</output> : LED 2</span>");
+            CP("<span class='btn-slide'><input type='range' id='b' name='b' value='" + String(_settings->flashLED3) + "' min='0' max='255' oninput='this.nextElementSibling.value = this.value' class='slide'><output>" + String(_settings->flashLED3) + "</output> : LED 3</span>");
+            CP("<span class='btn-text' onclick='led.submit()'>Switch LED Brightness</span>");
             CP("</a></form>");
 
             CP("</div></div></div></div>");
@@ -494,10 +509,10 @@ Serial.println(_settings->flashBackground);
 
             CP("</div></div></div></div>");
 
-            // Date/Time menu [12, 13, 19, 20, 21, 22]
+            // Date/Time menu [12, 13, 19, 20, 21, 22 & 23]
             CP("<div class='divTable'>");
             CP("<div class='divTableBody'>");
-            if (setting == 12 || setting == 13 || (setting >= 19 && setting <= 22)) {
+            if (setting == 12 || setting == 13 || (setting >= 19 && setting <= 23)) {
               CP("<div class='divTableRow' id='M4' style='display:block'>");
             } else {
               CP("<div class='divTableRow' id='M4' style='display:none'>");
@@ -554,19 +569,55 @@ Serial.println(_settings->flashBackground);
             CP("</a></form>");
 
             // 23 Set NTP Pool
-            CP("<form name='ntppool' action='c6' method='get'><a class='o'>");
+            CP("<form name='ntppool' action='23' method='get'><a class='o'>");
             CP("<span class='btn-icon' onclick='ntppool.submit()'><svg width='66' height='66' viewBox='2 2 16 16' fill='currentColor'><path d='M6.887 7.2l-.964-.165A2.5 2.5 0 105.5 12H8v1H5.5a3.5 3.5 0 11.59-6.95 5.002 5.002 0 119.804 1.98A2.501 2.501 0 0115.5 13H12v-1h3.5a1.5 1.5 0 00.237-2.981L14.7 8.854l.216-1.028a4 4 0 10-7.843-1.587l-.185.96z'/><path fill-rule='evenodd' d='M7 14.5a.5.5 0 01.707 0L10 16.793l2.293-2.293a.5.5 0 11.707.707l-2.646 2.647a.5.5 0 01-.708 0L7 15.207a.5.5 0 010-.707z' clip-rule='evenodd'/><path fill-rule='evenodd' d='M10 8a.5.5 0 01.5.5v8a.5.5 0 01-1 0v-8A.5.5 0 0110 8z' clip-rule='evenodd'/></svg></span>");
             CP("<span class='btn-slide'>");
             CP("<select class='selectwide' name='v' id='v'>");
+
+            const char* selected = "";
+            for(byte i = 1; i < 7; ++i) {
+              if (i == _settings->flashNTPPool) {
+                selected = "selected";
+                Serial.println("ya");
+              } else {
+                selected = "";
+                Serial.println("na");
+              }
+              switch (i) {
+                case 1:
+                  CP("<option value='1' " + String(selected) + ">africa.pool.ntp.org</option>");
+                  break;
+                case 2:
+                  CP("<option value='2' " + String(selected) + ">asia.pool.ntp.org</option>");
+                  break;
+                case 3:
+                  CP("<option value='3' " + String(selected) + ">europe.pool.ntp.org</option>");
+                  break;
+                case 4:
+                  CP("<option value='4' " + String(selected) + ">north-america.pool.ntp.org</option>");
+                  break;
+                case 5:
+                  CP("<option value='5' " + String(selected) + ">oceania.pool.ntp.org</option>");
+                  break;
+                case 6:
+                  CP("<option value='6' " + String(selected) + ">south-america.pool.ntp.org</option>");
+                  break;
+              }
+            }
+            Serial.print("ntp");
+            Serial.println();
+            /*
             CP("<option value='1'>africa.pool.ntp.org</option>");
             CP("<option value='2'>asia.pool.ntp.org</option>");
             CP("<option value='3' selected>europe.pool.ntp.org</option>");
             CP("<option value='4'>north-america.pool.ntp.org</option>");
             CP("<option value='5'>oceania.pool.ntp.org</option>");
             CP("<option value='6'>south-america.pool.ntp.org</option>");
+            */
+            
             CP("</select>");
             CP("</span>");
-            CP("<span class='btn-text' onclick='setdate.submit()'>Set NTP Pool</span>");
+            CP("<span class='btn-text' onclick='ntppool.submit()'>Set NTP Pool</span>");
             CP("</a></form>");
 
             CP("</div><div class='divTableCell'>");
@@ -619,7 +670,7 @@ Serial.println(_settings->flashBackground);
             // 19 Set UTC Offset
             CP("<form name='utcoffset' action='19' method='get'><a class='o'>");
             CP("<span class='btn-icon' onclick='utcoffset.submit()'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M11 6v8h7v-2h-5v-6h-2zm10.854 7.683l1.998.159c-.132.854-.351 1.676-.652 2.46l-1.8-.905c.2-.551.353-1.123.454-1.714zm-2.548 7.826l-1.413-1.443c-.486.356-1.006.668-1.555.933l.669 1.899c.821-.377 1.591-.844 2.299-1.389zm1.226-4.309c-.335.546-.719 1.057-1.149 1.528l1.404 1.433c.583-.627 1.099-1.316 1.539-2.058l-1.794-.903zm-20.532-5.2c0 6.627 5.375 12 12.004 12 1.081 0 2.124-.156 3.12-.424l-.665-1.894c-.787.2-1.607.318-2.455.318-5.516 0-10.003-4.486-10.003-10s4.487-10 10.003-10c2.235 0 4.293.744 5.959 1.989l-2.05 2.049 7.015 1.354-1.355-7.013-2.184 2.183c-2.036-1.598-4.595-2.562-7.385-2.562-6.629 0-12.004 5.373-12.004 12zm23.773-2.359h-2.076c.163.661.261 1.344.288 2.047l2.015.161c-.01-.755-.085-1.494-.227-2.208z'/></svg></span>");
-            CP("<span class='btn-slide'><input type='range' id='v' name='v' value='1' min='-12' max='12' oninput='this.nextElementSibling.value = this.value' class='slide'><output>1</output></span>");
+            CP("<span class='btn-slide'><input type='range' id='v' name='v' value='" + String(_settings->flashUTCOffset) + "' min='-12' max='12' oninput='this.nextElementSibling.value = this.value' class='slide'><output>" + String(_settings->flashUTCOffset) + "</output></span>");
             CP("<span class='btn-text' onclick='utcoffset.submit()'>Set UTC Offset</span>");
             CP("</a></form>");
 
@@ -722,7 +773,7 @@ Serial.println(_settings->flashBackground);
 
         // Check the client requests
         if (currentLine.startsWith("GET /10")) {             // Slot machine
-          repeat = currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')).toInt();
+          _settings->flashSpin = currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')).toInt();
           setting = 10;
         } else if (currentLine.startsWith("GET /11")) {      // Run BME280
           setting = 11;
@@ -796,6 +847,14 @@ Serial.println(_settings->flashBackground);
           _settings->flash_SSID = urlDecode(currentLine.substring(13, currentLine.indexOf('&'))); 
           _settings->flash_PASS = urlDecode(currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')));
           setting = 26;
+        } else if (currentLine.startsWith("GET /27")) {      // Change Colon LED Brightness
+          _settings->flashColon = currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')).toInt();
+          setting = 27;
+        } else if (currentLine.startsWith("GET /28")) {      // Change Switch LED Brightness
+          _settings->flashLED1 = currentLine.substring(currentLine.indexOf("r=") + 2, currentLine.indexOf("g=") - 1).toInt();
+          _settings->flashLED2 = currentLine.substring(currentLine.indexOf("g=") + 2, currentLine.indexOf("b=") - 1).toInt();
+          _settings->flashLED3 = currentLine.substring(currentLine.indexOf("b=") + 2, currentLine.lastIndexOf(' ')).toInt();
+          setting = 28;
         }
       }
     }
@@ -804,7 +863,7 @@ Serial.println(_settings->flashBackground);
     // Run functions if a button was pressed
     switch (setting) {
       case 10: // Slot machine
-        _nixie->runSlotMachine(repeat);
+        _nixie->runSlotMachine(_settings->flashSpin);
         break;
       case 11: // Run BME280
         _i2c->displayTHP();
@@ -847,7 +906,7 @@ Serial.println(_settings->flashBackground);
       
         break;
       case 23: // Set NTP Pool
-      
+        _settings->rwSettings(23, 1);
         break;
       case 24: // Change WebUI Font
         _settings->rwSettings(24, 1);
@@ -865,6 +924,13 @@ Serial.println(_settings->flashBackground);
         getNTP();
         _settings->debug(14);
         displayIP();
+        break;
+      case 27: // Change Colon LED Brightness
+        _settings->rwSettings(27, 1);
+        break;
+      case 28: // Change Switch LED Brightness
+        _settings->rwSettings(28, 1);
+        _fade->setSwitchLEDBrightness();
         break;
     }
   }

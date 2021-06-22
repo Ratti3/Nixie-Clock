@@ -71,7 +71,7 @@ void TimeTask::task() {
   if (s % 2 == 0) {
     analogWrite(PIN_COLON, 0);
   } else {
-    analogWrite(PIN_COLON, 100);
+    analogWrite(PIN_COLON, _settings->flashColon);
   }
 
   // Write to display
@@ -79,7 +79,7 @@ void TimeTask::task() {
 
   // Once a minute, run the slot machine effect to prevent cathode poisoning
   if (s == 0) {
-    _nixie->runSlotMachine(1);
+    _nixie->runSlotMachine(_settings->flashSpin);
   }
 }
 

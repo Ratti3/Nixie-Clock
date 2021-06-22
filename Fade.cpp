@@ -4,15 +4,32 @@ Fade::Fade(Settings* settings) {
   _settings = settings;
 }
 
+void Fade::start() {
+  // LED Colon
+  pinMode(PIN_COLON, OUTPUT);
+
+  // LED Switches
+  pinMode(PIN_SW1_LED1, OUTPUT);
+  pinMode(PIN_SW2_LED2, OUTPUT);
+  pinMode(PIN_SW3_LED3, OUTPUT);
+
+  // Red (1st LED)
+  analogWrite(PIN_SW1_LED1, _settings->flashLED1);
+  // Green (2nd LED)
+  analogWrite(PIN_SW2_LED2, _settings->flashLED2);
+  // Blue (3rd LED)
+  analogWrite(PIN_SW3_LED3, _settings->flashLED3);
+}
+
 void Fade::fadeIn() {
-  for(uint8_t i = 0; i != 255; i += 1 ){
+  for(uint8_t i = 0; i != 255; i += 1) {
     analogWrite(PIN_COLON, i);
     delay(2);
   }
 }
 
 void Fade::fadeOut() {
-  for(uint8_t i = 255; i != 0; i -= 1){
+  for(uint8_t i = 255; i != 0; i -= 1) {
     analogWrite(PIN_COLON, i);
     delay(2);
   }
@@ -20,4 +37,13 @@ void Fade::fadeOut() {
 
 void Fade::setBrightness() {
   analogWrite(PIN_HV_BL, _settings->flashBrightness);
+}
+
+void Fade::setSwitchLEDBrightness() {
+  // Red (1st LED)
+  analogWrite(PIN_SW1_LED1, _settings->flashLED1);
+  // Green (2nd LED)
+  analogWrite(PIN_SW2_LED2, _settings->flashLED2);
+  // Blue (3rd LED)
+  analogWrite(PIN_SW3_LED3, _settings->flashLED3);
 }

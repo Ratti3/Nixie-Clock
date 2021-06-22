@@ -13,17 +13,6 @@ void NixieDisplay::begin() {
   // Transistor controlled IN-12B Decimal Points (tubes 3 and 4)
   pinMode(PIN_DOT_THREE, OUTPUT);
   pinMode(PIN_DOT_FOUR, OUTPUT);
-
-  // LED Colon
-  pinMode(PIN_COLON, OUTPUT);
-
-  // LED Switches
-  pinMode(PIN_SW1_LED1, OUTPUT);
-  pinMode(PIN_SW2_LED2, OUTPUT);
-  pinMode(PIN_SW3_LED3, OUTPUT);
-  analogWrite(PIN_SW1_LED1, 200);
-  analogWrite(PIN_SW2_LED2, 90);
-  analogWrite(PIN_SW3_LED3, 128);
   
   disableAllSegments();
   updateDisplay(); // Write 64 zeros into the shift registers before enabling HV

@@ -51,6 +51,10 @@ void setup() {
   // Load all saved settings from Flash
   settings.debug(0);
   settings.begin();
+
+  // Initialise the Colon and Switch LEDs
+  //settings.debug(0);
+  fade.start();
   
   // Initiate the HV5532 outputs
   settings.debug(1);
