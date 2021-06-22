@@ -213,36 +213,6 @@ void Settings::rwSettings(byte setting, bool save) {
           Serial.println("No flashFont Value!");
         }
       }
-      Serial.println(flashFont);
-      switch (flashFont) {
-        case 1:
-          webFont = "Audiowide";
-          break;
-        case 2:
-          webFont = "Codystar";
-          break;
-        case 3:
-          webFont = "Gugi";
-          break;
-        case 4:
-          webFont = "Michroma";
-          break;
-        case 5:
-          webFont = "Nova Round";
-          break;
-        case 6:
-          webFont = "Orbitron";
-          break;
-        case 7:
-          webFont = "Revalia";
-          break;
-        case 8:
-          webFont = "Slackey";
-          break;
-        default:
-          webFont = "Audiowide";
-          break;
-      }
       break;
     case 25: // Change WebUI Background
       savedBackground savedbackground;

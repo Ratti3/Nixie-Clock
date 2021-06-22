@@ -179,14 +179,17 @@ void WiFiTask::displayIP() {
 
 // Web server for interacting with the Nano 33 IoT
 void WiFiTask::clientServer() {
-  // Holds run state of the clicked buttons
-  byte setting = 0;
-
   // Listen for incoming client connections
   WiFiClient client = _server->available();   
 
+  // Holds run state of the clicked buttons
+  byte setting = 0;
+
   // Used to prevent repetitive client request data gathering
   byte i = 0;
+
+  // Used to select correct option dropdowns
+  const char* selected = "";
 
   if (client) {
     String currentLine = "";
@@ -215,6 +218,38 @@ void WiFiTask::clientServer() {
             CP("<title>" + String(_settings->webName) + " : " + String(_settings->fwVersion) + "</title>");
             CP("<style>");
 
+            switch (_settings->flashFont) {
+              case 1:
+                _settings->webFont = "Audiowide";
+                break;
+              case 2:
+                _settings->webFont = "Codystar";
+                break;
+              case 3:
+                _settings->webFont = "Gugi";
+                break;
+              case 4:
+                _settings->webFont = "Michroma";
+                break;
+              case 5:
+                _settings->webFont = "Nova Round";
+                break;
+              case 6:
+                _settings->webFont = "Orbitron";
+                break;
+              case 7:
+                _settings->webFont = "Revalia";
+                break;
+              case 8:
+                _settings->webFont = "Slackey";
+                break;
+              default:
+                _settings->webFont = "Audiowide";
+                break;
+            }
+            Serial.println(_settings->webFont);
+            Serial.println(_settings->flashFont);
+
             // Set the WebUI background based on the saved setting
             switch (_settings->flashBackground) {
               case 1: // Cage
@@ -233,7 +268,6 @@ void WiFiTask::clientServer() {
                 CP("body {background: radial-gradient(lightgrey 3px, transparent 4px), radial-gradient(lightgrey 3px, transparent 4px), linear-gradient(#f2f2f2 4px, transparent 0), linear-gradient(45deg, transparent 74px, transparent 75px, #a4a4a4 75px, #a4a4a4 76px, transparent 77px, transparent 109px), linear-gradient(-45deg, transparent 75px, transparent 76px, #a4a4a4 76px, #a4a4a4 77px, transparent 78px, transparent 109px), #f2f2f2; background-size: 109px 109px, 109px 109px, 100% 6px, 109px 109px, 109px 109px; background-position: 54px 55px, 0px 0px, 0px 0px, 0px 0px, 0px 0px;}");
                 break;
             }
-Serial.println(_settings->flashBackground);
             CP("div {text-align: center; margin: 0 auto;}");
 
             CP("h1, h3 {font-family: " + String(_settings->webFont) + ", Verdana; font-weight: bold;}");
@@ -573,15 +607,11 @@ Serial.println(_settings->flashBackground);
             CP("<span class='btn-icon' onclick='ntppool.submit()'><svg width='66' height='66' viewBox='2 2 16 16' fill='currentColor'><path d='M6.887 7.2l-.964-.165A2.5 2.5 0 105.5 12H8v1H5.5a3.5 3.5 0 11.59-6.95 5.002 5.002 0 119.804 1.98A2.501 2.501 0 0115.5 13H12v-1h3.5a1.5 1.5 0 00.237-2.981L14.7 8.854l.216-1.028a4 4 0 10-7.843-1.587l-.185.96z'/><path fill-rule='evenodd' d='M7 14.5a.5.5 0 01.707 0L10 16.793l2.293-2.293a.5.5 0 11.707.707l-2.646 2.647a.5.5 0 01-.708 0L7 15.207a.5.5 0 010-.707z' clip-rule='evenodd'/><path fill-rule='evenodd' d='M10 8a.5.5 0 01.5.5v8a.5.5 0 01-1 0v-8A.5.5 0 0110 8z' clip-rule='evenodd'/></svg></span>");
             CP("<span class='btn-slide'>");
             CP("<select class='selectwide' name='v' id='v'>");
-
-            const char* selected = "";
             for(byte i = 1; i < 7; ++i) {
               if (i == _settings->flashNTPPool) {
                 selected = "selected";
-                Serial.println("ya");
               } else {
                 selected = "";
-                Serial.println("na");
               }
               switch (i) {
                 case 1:
@@ -604,17 +634,6 @@ Serial.println(_settings->flashBackground);
                   break;
               }
             }
-            Serial.print("ntp");
-            Serial.println();
-            /*
-            CP("<option value='1'>africa.pool.ntp.org</option>");
-            CP("<option value='2'>asia.pool.ntp.org</option>");
-            CP("<option value='3' selected>europe.pool.ntp.org</option>");
-            CP("<option value='4'>north-america.pool.ntp.org</option>");
-            CP("<option value='5'>oceania.pool.ntp.org</option>");
-            CP("<option value='6'>south-america.pool.ntp.org</option>");
-            */
-            
             CP("</select>");
             CP("</span>");
             CP("<span class='btn-text' onclick='ntppool.submit()'>Set NTP Pool</span>");
@@ -716,14 +735,39 @@ Serial.println(_settings->flashBackground);
             CP("<span class='btn-icon' onclick='changefont.submit()'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M24 20v1h-4v-1h.835c.258 0 .405-.178.321-.422l-.473-1.371h-2.231l-.575-1.59h2.295l-1.362-4.077-1.154 3.451-.879-2.498.921-2.493h2.222l3.033 8.516c.111.315.244.484.578.484h.469zm-6-1h1v2h-7v-2h.532c.459 0 .782-.453.633-.887l-.816-2.113h-6.232l-.815 2.113c-.149.434.174.887.633.887h1.065v2h-7v-2h.43c.593 0 1.123-.375 1.32-.935l5.507-15.065h3.952l5.507 15.065c.197.56.69.935 1.284.935zm-10.886-6h4.238l-2.259-6.199-1.979 6.199z'/></svg></span>");
             CP("<span class='btn-slide'>");
             CP("<select class='selectwide' name='v' id='v'>");
-            CP("<option value='1' class='audiowide'>Audiowide</option>");
-            CP("<option value='2' class='codystar'>Codystar</option>");
-            CP("<option value='3' class='gugi'>Gugi</option>");
-            CP("<option value='4' class='michroma'>Michroma</option>");
-            CP("<option value='5' class='novaround'>Nova Round</option>");
-            CP("<option value='6' class='orbitron'>Orbitron</option>");
-            CP("<option value='7' class='revalia'>Revalia</option>");
-            CP("<option value='8' class='slackey'>Slackey</option>");
+            for(byte i = 1; i < 9; ++i) {
+              if (i == _settings->flashFont) {
+                selected = "selected";
+              } else {
+                selected = "";
+              }
+              switch (i) {
+                case 1:
+                  CP("<option value='1' class='audiowide' " + String(selected) + ">Audiowide</option>");
+                  break;
+                case 2:
+                  CP("<option value='2' class='codystar' " + String(selected) + ">Codystar</option>");
+                  break;
+                case 3:
+                  CP("<option value='3' class='gugi' " + String(selected) + ">Gugi</option>");
+                  break;
+                case 4:
+                  CP("<option value='4' class='michroma' " + String(selected) + ">Michroma</option>");
+                  break;
+                case 5:
+                  CP("<option value='5' class='novaround' " + String(selected) + ">Nova Round</option>");
+                  break;
+                case 6:
+                  CP("<option value='6' class='orbitron' " + String(selected) + ">Orbitron</option>");
+                  break;
+                case 7:
+                  CP("<option value='7' class='revalia' " + String(selected) + ">Revalia</option>");
+                  break;
+                case 8:
+                  CP("<option value='8' class='slackey' " + String(selected) + ">Slackey</option>");
+                  break;
+              }
+            }
             CP("</select>");
             CP("</span>");
             CP("<span class='btn-text' onclick='changefont.submit()'>Change Font</span>");
@@ -736,11 +780,30 @@ Serial.println(_settings->flashBackground);
             CP("<span class='btn-icon' onclick='changebg.submit()'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M9 12c0-.552.448-1 1.001-1s.999.448.999 1-.446 1-.999 1-1.001-.448-1.001-1zm6.2 0l-1.7 2.6-1.3-1.6-3.2 4h10l-3.8-5zm8.8-5v14h-20v-3h-4v-15h21v4h3zm-20 9v-9h15v-2h-17v11h2zm18-7h-16v10h16v-10z'/></svg></span>");
             CP("<span class='btn-slide'>");
             CP("<select class='selectwide' name='v' id='v'>");
-            CP("<option value='1'>Cage</option>");
-            CP("<option value='2'>Dominoes</option>");
-            CP("<option value='3'>Grid</option>");
-            CP("<option value='4'>Hexagon</option>");
-            CP("<option value='5'>Squares</option>");
+            for(byte i = 1; i < 6; ++i) {
+              if (i == _settings->flashBackground) {
+                selected = "selected";
+              } else {
+                selected = "";
+              }
+              switch (i) {
+                case 1:
+                  CP("<option value='1' " + String(selected) + ">Cage</option>");
+                  break;
+                case 2:
+                  CP("<option value='2' " + String(selected) + ">Dominoes</option>");
+                  break;
+                case 3:
+                  CP("<option value='3' " + String(selected) + ">Grid</option>");
+                  break;
+                case 4:
+                  CP("<option value='4' " + String(selected) + ">Hexagon</option>");
+                  break;
+                case 5:
+                  CP("<option value='5' " + String(selected) + ">Squares</option>");
+                  break;
+              }
+            }
             CP("</select>");
             CP("</span>");
             CP("<span class='btn-text' onclick='changebg.submit()'>Change Background</span>");
@@ -815,7 +878,6 @@ Serial.println(_settings->flashBackground);
           setting = 17;
         } else if (currentLine.startsWith("GET /18")) {      // Set brightness
           _settings->flashBrightness = currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')).toInt();
-          Serial.println(_settings->flashBrightness);
           setting = 18;
         } else if (currentLine.startsWith("GET /19")) {      // UTC Offset
           _settings->flashUTCOffset = currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')).toInt();
@@ -837,11 +899,9 @@ Serial.println(_settings->flashBackground);
           setting = 23;
         } else if (currentLine.startsWith("GET /24")) {      // Change WebUI Font
           _settings->flashFont = currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')).toInt();
-          Serial.println(_settings->flashFont);
           setting = 24;
         } else if (currentLine.startsWith("GET /25")) {      // Change WebUI Backgound
           _settings->flashBackground = currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')).toInt();
-          Serial.println(_settings->flashBackground);
           setting = 25;
         } else if (currentLine.startsWith("GET /26")) {      // Change WiFi
           _settings->flash_SSID = urlDecode(currentLine.substring(13, currentLine.indexOf('&'))); 
