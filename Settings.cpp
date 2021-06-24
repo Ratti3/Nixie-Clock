@@ -12,10 +12,9 @@ FlashStorage(fsUSB, savedUSB);                // Stores USB/DC power supply stat
 FlashStorage(fsFont, savedFont);              // Stores WebUI font settings
 FlashStorage(fsBackground, savedBackground);  // Stores WebUI background settings
 FlashStorage(fsColon, savedColon);            // Stores Colon LED PWM value
-FlashStorage(fsLED1, savedLED1);              // Stores Switch LED1 PWM value
-FlashStorage(fsLED2, savedLED2);              // Stores Switch LED2 PWM value
-FlashStorage(fsLED3, savedLED3);              // Stores Switch LED3 PWM value
+FlashStorage(fsLED, savedLED);                // Stores Switch LED1-3 PWM value
 FlashStorage(fsSpin, savedSpin);              // Stores Nixie Hourly Spin Cycles
+FlashStorage(fsLux, savedLux);                // Stores the low Lux level threshold value
 
 Settings::Settings() {}
 
@@ -23,7 +22,7 @@ Settings::Settings() {}
 void Settings::begin() {
   rwSettings(10, 0);
   rwSettings(13, 0);
-  for (byte i = 15; i <= 28; i++) {
+  for (byte i = 15; i <= 29; i++) {
     rwSettings(i, 0);
   }
 }
@@ -37,14 +36,14 @@ void Settings::rwSettings(byte setting, bool save) {
         savedspin.flashSpin = flashSpin;
         savedspin.validSpin = true;
         fsSpin.write(savedspin);
-        Serial.println("[DEBUG] Spin settings have been saved");
+        SPL("[DEBUG] Spin settings have been saved");
       } else {
         if (savedspin.validSpin) {
           flashSpin = savedspin.flashSpin;
-          Serial.print("Read: ");
-          Serial.println(flashSpin);
+          SP("Read: ");
+          SPL(flashSpin);
         } else {
-          Serial.println("No flashSpin Value!");
+          SPL("No flashSpin Value!");
         }
       }
       break;
@@ -55,14 +54,14 @@ void Settings::rwSettings(byte setting, bool save) {
         savedntp.flashNTP = flashNTP;
         savedntp.validNTP = true;
         fsNTP.write(savedntp);
-        Serial.println("[DEBUG] NTP settings have been saved");
+        SPL("[DEBUG] NTP settings have been saved");
       } else {
         if (savedntp.validNTP) {
           flashNTP = savedntp.flashNTP;
-          Serial.print("Read: ");
-          Serial.println(flashNTP);
+          SP("Read: ");
+          SPL(flashNTP);
         } else {
-          Serial.println("No flashNTP Value!");
+          SPL("No flashNTP Value!");
         }
       }
       break;
@@ -73,14 +72,14 @@ void Settings::rwSettings(byte setting, bool save) {
         savedpir.flashPIR = flashPIR;
         savedpir.validPIR = true;
         fsPIR.write(savedpir);
-        Serial.println("[DEBUG] PIR settings have been saved");
+        SPL("[DEBUG] PIR settings have been saved");
       } else {
         if (savedpir.validPIR) {
           flashPIR = savedpir.flashPIR;
-          Serial.print("Read: ");
-          Serial.println(flashPIR);
+          SP("Read: ");
+          SPL(flashPIR);
         } else {
-          Serial.println("No flashPIR Value!");
+          SPL("No flashPIR Value!");
         }
       }
       break;
@@ -91,14 +90,14 @@ void Settings::rwSettings(byte setting, bool save) {
         savedlight.flashLight = flashLight;
         savedlight.validLight = true;
         fsLight.write(savedlight);
-        Serial.println("[DEBUG] Light settings have been saved");
+        SPL("[DEBUG] Light settings have been saved");
       } else {
         if (savedlight.validLight) {
           flashLight = savedlight.flashLight;
-          Serial.print("Read: ");
-          Serial.println(flashLight);
+          SP("Read: ");
+          SPL(flashLight);
         } else {
-          Serial.println("No flashLight Value!");
+          SPL("No flashLight Value!");
         }
       }
       break;
@@ -109,14 +108,14 @@ void Settings::rwSettings(byte setting, bool save) {
         savedusb.flashUSB = flashUSB;
         savedusb.validUSB = true;
         fsUSB.write(savedusb);
-        Serial.println("[DEBUG] Power settings have been saved");
+        SPL("[DEBUG] Power settings have been saved");
       } else {
         if (savedusb.validUSB) {
           flashUSB = savedusb.flashUSB;
-          Serial.print("Read: ");
-          Serial.println(flashUSB);
+          SP("Read: ");
+          SPL(flashUSB);
         } else {
-          Serial.println("No flashUSB Value!");
+          SPL("No flashUSB Value!");
         }
       }
       break;
@@ -127,14 +126,14 @@ void Settings::rwSettings(byte setting, bool save) {
         savedbrightness.flashBrightness = flashBrightness;
         savedbrightness.validBrightness = true;
         fsBrightness.write(savedbrightness);
-        Serial.println("[DEBUG] Brightness settings have been saved");
+        SPL("[DEBUG] Brightness settings have been saved");
       } else {
         if (savedbrightness.validBrightness) {
           flashBrightness = savedbrightness.flashBrightness;
-          Serial.print("Read: ");
-          Serial.println(flashBrightness);
+          SP("Read: ");
+          SPL(flashBrightness);
         } else {
-          Serial.println("No flashBrightness Value!");
+          SPL("No flashBrightness Value!");
         }
       }
       break;
@@ -145,14 +144,14 @@ void Settings::rwSettings(byte setting, bool save) {
         savedutcoffset.flashUTCOffset = flashUTCOffset;
         savedutcoffset.validUTCOffset = true;
         fsUTCOffset.write(savedutcoffset);
-        Serial.println("[DEBUG] UTC Offset settings have been saved");
+        SPL("[DEBUG] UTC Offset settings have been saved");
       } else {
         if (savedutcoffset.validUTCOffset) {
           flashUTCOffset = savedutcoffset.flashUTCOffset;
-          Serial.print("Read: ");
-          Serial.println(flashUTCOffset);
+          SP("Read: ");
+          SPL(flashUTCOffset);
         } else {
-          Serial.println("No flashUTCOffset Value!");
+          SPL("No flashUTCOffset Value!");
         }
       }
       break;
@@ -164,16 +163,16 @@ void Settings::rwSettings(byte setting, bool save) {
         savedonoffhour.flashOffHour = flashOffHour;
         savedonoffhour.validOnOffHour = true;
         fsOnOffHour.write(savedonoffhour);
-        Serial.println("[DEBUG] On/Off Hour settings have been saved");
+        SPL("[DEBUG] On/Off Hour settings have been saved");
       } else {
         if (savedonoffhour.validOnOffHour) {
           flashOnHour = savedonoffhour.flashOnHour;
           flashOffHour = savedonoffhour.flashOffHour;
-          Serial.print("Read: ");
-          Serial.println(flashOnHour);
-          Serial.println(flashOffHour);
+          SP("Read: ");
+          SPL(flashOnHour);
+          SPL(flashOffHour);
         } else {
-          Serial.println("No flashOnHour/flashOffHour Value!");
+          SPL("No flashOnHour/flashOffHour Value!");
         }
       }
       break;
@@ -184,14 +183,14 @@ void Settings::rwSettings(byte setting, bool save) {
         savedntppool.flashNTPPool = flashNTPPool;
         savedntppool.validNTPPool = true;
         fsNTPPool.write(savedntppool);
-        Serial.println("[DEBUG] NTP Pool settings have been saved");
+        SPL("[DEBUG] NTP Pool settings have been saved");
       } else {
         if (savedntppool.validNTPPool) {
           flashNTPPool = savedntppool.flashNTPPool;
-          Serial.print("Read: ");
-          Serial.println(flashNTPPool);
+          SP("Read: ");
+          SPL(flashNTPPool);
         } else {
-          Serial.println("No NTP Pool Value!");
+          SPL("No NTP Pool Value!");
         }
       }
       switch (flashNTPPool) {
@@ -222,14 +221,14 @@ void Settings::rwSettings(byte setting, bool save) {
         savedfont.flashFont = flashFont;
         savedfont.validFont = true;
         fsFont.write(savedfont);
-        Serial.println("[DEBUG] WebUI font settings have been saved");
+        SPL("[DEBUG] WebUI font settings have been saved");
       } else {
         if (savedfont.validFont) {
           flashFont = savedfont.flashFont;
-          Serial.print("Read: ");
-          Serial.println(flashFont);
+          SP("Read: ");
+          SPL(flashFont);
         } else {
-          Serial.println("No flashFont Value!");
+          SPL("No flashFont Value!");
         }
       }
       break;
@@ -240,14 +239,14 @@ void Settings::rwSettings(byte setting, bool save) {
         savedbackground.flashBackground = flashBackground;
         savedbackground.validBackground = true;
         fsBackground.write(savedbackground);
-        Serial.println("[DEBUG] WebUI background settings have been saved");
+        SPL("[DEBUG] WebUI background settings have been saved");
       } else {
         if (savedbackground.validBackground) {
           flashBackground = savedbackground.flashBackground;
-          Serial.print("Read: ");
-          Serial.println(flashBackground);
+          SP("Read: ");
+          SPL(flashBackground);
         } else {
-          Serial.println("No flashBackground Value!");
+          SPL("No flashBackground Value!");
         }
       }
       break;
@@ -260,7 +259,7 @@ void Settings::rwSettings(byte setting, bool save) {
         flash_PASS.toCharArray(savedwifi.flash_PASS, 50);
         savedwifi.valid = true;
         fsWiFi.write(savedwifi);
-        Serial.println("[DEBUG] WiFi credentials have been saved");
+        SPL("[DEBUG] WiFi credentials have been saved");
       } else {
         if (savedwifi.valid) {
           ssid = savedwifi.flash_SSID;
@@ -279,109 +278,117 @@ void Settings::rwSettings(byte setting, bool save) {
         savedcolon.flashColon = flashColon;
         savedcolon.validColon = true;
         fsColon.write(savedcolon);
-        Serial.println("[DEBUG] Colon LED settings have been saved");
+        SPL("[DEBUG] Colon LED settings have been saved");
       } else {
         if (savedcolon.validColon) {
           flashColon = savedcolon.flashColon;
-          Serial.print("Read flashColon: ");
-          Serial.println(flashColon);
+          SP("Read flashColon: ");
+          SPL(flashColon);
         } else {
-          Serial.println("No flashColon Value!");
+          SPL("No flashColon Value!");
         }
       }
       break;
     case 28:
-      savedLED1 savedled1;
-      savedLED2 savedled2;
-      savedLED3 savedled3;
-      savedled1 = fsLED1.read();
-      savedled2 = fsLED2.read();
-      savedled3 = fsLED3.read();
+      savedLED savedled;
+      savedled = fsLED.read();
       if (save) {
-        savedled1.flashLED1 = flashLED1;
-        savedled2.flashLED2 = flashLED2;
-        savedled3.flashLED3 = flashLED3;
-        savedled1.validLED1 = true;
-        savedled2.validLED2 = true;
-        savedled3.validLED3 = true;
-        fsLED1.write(savedled1);
-        Serial.println("[DEBUG] LED1 settings have been saved");
-        fsLED2.write(savedled2);
-        Serial.println("[DEBUG] LED2 settings have been saved");
-        fsLED3.write(savedled3);
-        Serial.println("[DEBUG] LED3 settings have been saved");
+        savedled.flashLED1 = flashLED1;
+        savedled.flashLED2 = flashLED2;
+        savedled.flashLED3 = flashLED3;
+        savedled.validLED = true;
+        fsLED.write(savedled);
+        SPL("[DEBUG] LED1 settings have been saved");
       } else {
-        if (savedled1.validLED1 && savedled2.validLED2 && savedled3.validLED3) {
-          flashLED1 = savedled1.flashLED1;
-          flashLED2 = savedled2.flashLED2;
-          flashLED3 = savedled3.flashLED3;
-          Serial.print("Read: ");
-          Serial.println(flashLED1);
-          Serial.println(flashLED2);
-          Serial.println(flashLED3);
+        if (savedled.validLED) {
+          flashLED1 = savedled.flashLED1;
+          flashLED2 = savedled.flashLED2;
+          flashLED3 = savedled.flashLED3;
+          SP("Read: ");
+          SPL(flashLED1);
+          SPL(flashLED2);
+          SPL(flashLED3);
         } else {
-          Serial.println("No flashLED1-3 Value!");
+          SPL("No flashLED1-3 Value!");
         }
       }
-    break;
+      break;
+    case 29: // Lux threshold level
+      savedLux savedlux;
+      savedlux = fsLux.read();
+      if (save) {
+        savedlux.flashLux = flashLux;
+        savedlux.validLux = true;
+        fsLux.write(savedlux);
+        SPL("[DEBUG] Lux settings have been saved");
+      } else {
+        if (savedlux.validLux) {
+          flashLux = savedlux.flashLux;
+          SP("Read: ");
+          SPL(flashLux);
+        } else {
+          SPL("No flashLux Value!");
+        }
+      }
+      break;
   }
 }
 
 void Settings::debug(byte n) {
   switch (n) {
     case 0:
-      Serial.println("[DEBUG] Load saved settings");
+      SPL("[DEBUG] Load saved settings");
       break;
     case 1:
-      Serial.println("[DEBUG] Begin HV5530");
+      SPL("[DEBUG] Begin HV5530");
       break;
     case 2:
-      Serial.println("[DEBUG] Begin HV enable pins");
+      SPL("[DEBUG] Begin HV enable pins");
       break;
     case 3:
-      Serial.println("[DEBUG] Begin I2C");
+      SPL("[DEBUG] Begin I2C");
       break;
     case 4:
-      Serial.println("[DEBUG] Could not find a valid DS3231 IC");
+      SPL("[DEBUG] Could not find a valid DS3231 IC");
       break;
     case 5:
-      Serial.println("[DEBUG] Found a valid DS3231 IC");
+      SPL("[DEBUG] Found a valid DS3231 IC");
       break;
     case 6:
-      Serial.println("[DEBUG] Could not find a valid BME280 sensor");
+      SPL("[DEBUG] Could not find a valid BME280 sensor");
       break;
     case 7:
-      Serial.println("[DEBUG] Found a valid BME280 sensor");
+      SPL("[DEBUG] Found a valid BME280 sensor");
       break;
     case 8:
-      Serial.println("[DEBUG] Could not find a valid VEML7700 sensor");
+      SPL("[DEBUG] Could not find a valid VEML7700 sensor");
       break;
     case 9:
-      Serial.println("[DEBUG] Foubd a valid VEML7700 sensor");
+      SPL("[DEBUG] Foubd a valid VEML7700 sensor");
       break;
     case 10:
-      Serial.println("[DEBUG] Connecting to WiFi");
+      SPL("[DEBUG] Connecting to WiFi");
       break;
     case 11:
-      Serial.println("[DEBUG] Initialise NTP Client");
+      SPL("[DEBUG] Initialise NTP Client");
       break;
     case 12:
-      Serial.println("[DEBUG] Initialise Web Server");
+      SPL("[DEBUG] Initialise Web Server");
       break;
     case 13:
-      Serial.println("[DEBUG] NTP Time Sync");
+      SPL("[DEBUG] NTP Time Sync");
       break;
     case 14:
-      Serial.println("[DEBUG] Display WiFi IP Address");
+      SPL("[DEBUG] Display WiFi IP Address");
       break;
     case 15:
-      Serial.println("[DEBUG] Saved WiFi credentials not found in flash");
+      SPL("[DEBUG] Saved WiFi credentials not found in flash");
       break;
     case 16:
-      Serial.println("");
+      SPL("");
       break;
     case 17:
-      Serial.println("");
+      SPL("");
       break;
   }
 }

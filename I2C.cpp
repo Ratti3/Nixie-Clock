@@ -1,11 +1,12 @@
 #include "I2C.h"
 
-I2C::I2C(NixieDisplay* nixie, RTC_DS3231* rtc, Adafruit_BME280* bme, Adafruit_VEML7700* veml, Settings* settings) {
+I2C::I2C(NixieDisplay* nixie, RTC_DS3231* rtc, Adafruit_BME280* bme, Adafruit_VEML7700* veml, Settings* settings, HV* hv) {
   _nixie = nixie;
   _rtc = rtc;
   _bme = bme;
   _veml = veml;
   _settings = settings;
+  _hv = hv;
 }
 
 void I2C::rtcBegin() {
@@ -77,11 +78,11 @@ void I2C::displayTHP() {
   delay(2000);
 
   /* DEBUG *
-  Serial.print("Temp");
-  Serial.print(t[0]/10);
-  Serial.print(t[0]%10);
-  Serial.print(t[1]/10);
-  Serial.println(" ");
+  SP("Temp");
+  SP(t[0]/10);
+  SP(t[0]%10);
+  SP(t[1]/10);
+  SPL(" ");
   */
 
   // Display humidity
@@ -101,10 +102,10 @@ void I2C::displayTHP() {
   delay(2000);
 
   /* DEBUG *
-  Serial.print("H");
-  Serial.print(h/10);
-  Serial.print(h%10);
-  Serial.println(" ");
+  SP("H");
+  SP(h/10);
+  SP(h%10);
+  SPL(" ");
   */
 
   byte p1[4];
@@ -155,12 +156,12 @@ void I2C::displayTHP() {
   delay(2000);
 
   /* DEBUG *
-  Serial.print("P");
-  Serial.print(p1[0]);
-  Serial.print(p1[1]);
-  Serial.print(p1[2]);
-  Serial.print(p1[3]);
-  Serial.println(" ");
+  SP("P");
+  SP(p1[0]);
+  SP(p1[1]);
+  SP(p1[2]);
+  SP(p1[3]);
+  SPL(" ");
   */
 
 }
@@ -170,31 +171,29 @@ void I2C::readLight() {
   if (_settings->I2C_CODE[2]) {
     return;
   }
-  Serial.println(_veml->readLux());
-  Serial.println(_veml->readLux());
-  if (_veml->readLux() < 5) {
-    digitalWrite(PIN_HV_EN, LOW);
-    Serial.println("OFF");
-    delay(5000);
+  if (_veml->readLux() < _settings->flashLux) {
+    //digitalWrite(PIN_HV_EN, LOW);
+
+
   } else {
-    digitalWrite(PIN_HV_EN, HIGH);
-    Serial.println("ON");
+    //digitalWrite(PIN_HV_EN, HIGH);
+
   }
 }
 
 // PIR Sensor Routine
 void I2C::PIR() {
-  val = digitalRead(PIN_PIR);        // Read the PIR Pin Output
-  if (val == HIGH) {
+  motion = digitalRead(PIN_PIR);     // Read the PIR Pin Output
+  if (motion == HIGH) {
     digitalWrite(LED_BUILTIN, HIGH); // Turn built in LED ON
     if (pirState == LOW) {
-      Serial.println("Motion detected!");
+      _hv->switchOn();
       pirState = HIGH;
     }
   } else {
-    digitalWrite(LED_BUILTIN, LOW); // Turn built in LED OFF
+    digitalWrite(LED_BUILTIN, LOW);  // Turn built in LED OFF
     if (pirState == HIGH) {
-      Serial.println("Motion ended!");
+      _hv->switchOff();
       pirState = LOW;
     }
   }
@@ -219,7 +218,7 @@ void I2C::readDate() {
 // Adjust DS3231 date and time using epoch
 void I2C::adjustTime(unsigned long epoch) {
   _rtc->adjust(DateTime(epoch));
-  Serial.print("Setting DS3231 Date and Time");
+  SP("Setting DS3231 Date and Time");
 }
 
 // Adjust DS3231 date/time using user input values
@@ -230,5 +229,5 @@ void I2C::adjustDateTime(bool dt) {
     readDate();
   }
   _rtc->adjust(DateTime(_settings->year, _settings->month, _settings->day, _settings->hour, _settings->minute, _settings->second));
-  Serial.println("Setting date/time manually via WebUI");
+  SPL("Setting date/time manually via WebUI");
 }

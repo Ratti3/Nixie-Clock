@@ -1,9 +1,5 @@
 #include "WiFiTask.h"
 
-// Shorten client print
-#define CP(x) (client.print(x));
-#define CPL(x) (client.println(x));
-
 WiFiTask::WiFiTask(NixieDisplay* nixie, TimeTask* timetask, I2C* i2c, NTPClient* timeclient, WiFiServer* server, Settings* settings, Fade* fade, HV* hv) {
   _nixie = nixie;
   _timetask = timetask;
@@ -29,9 +25,9 @@ void WiFiTask::connectWiFi() {
   // Keep track of the WiFi connection status
   WiFiFail = 0;
 
-  Serial.print("Connecting to SSID: ");
-  Serial.print(_settings->ssid);
-  Serial.print("..");
+  SP("Connecting to SSID: ");
+  SP(_settings->ssid);
+  SP("..");
 
   while (WiFi.status() != WL_CONNECTED) {
     _fade->fadeIn();
@@ -39,17 +35,17 @@ void WiFiTask::connectWiFi() {
     _fade->fadeOut();
     count++;
     if (count > 3) {
-      Serial.println(" ");
-      Serial.print("Failed to connect to WiFi network: ");
-      Serial.println(_settings->ssid);
-      Serial.println(" ");
+      SPL(" ");
+      SP("Failed to connect to WiFi network: ");
+      SPL(_settings->ssid);
+      SPL(" ");
       WiFiFail = 1;
       break;
     }
   }
 
   if (!WiFiFail) {
-    Serial.println("..connected");
+    SPL("..connected");
     printWifiStatus();
   }
 }
@@ -76,27 +72,27 @@ void WiFiTask::getNTP() {
   _nixie->updateDisplay();
   
   // Send UDP packet process the reply
-  Serial.println("Sending NTP request...");
+  SPL("Sending NTP request...");
   _fade->fadeIn();
   _timeclient->update();
   _fade->fadeOut();
   delay(5);
   if (_timeclient->getEpochTime() > 100000) {
     _i2c->adjustTime(_timeclient->getEpochTime());
-    Serial.print(" with UNIX Time: ");
-    Serial.println(_timeclient->getEpochTime());
+    SP(" with UNIX Time: ");
+    SPL(_timeclient->getEpochTime());
   } else {
-    Serial.println(" ");
-    Serial.println("NTP Request Failed");
-    Serial.println(" ");
+    SPL(" ");
+    SPL("NTP Request Failed");
+    SPL(" ");
   }
 }
 
 // Prints WiFi connection info
 void WiFiTask::printWifiStatus() {
   // Print the SSID of the network you're attached to:
-  Serial.print("SSID: ");
-  Serial.print(WiFi.SSID());
+  SP("SSID: ");
+  SP(WiFi.SSID());
   // Get the IP address
   IPAddress ip = WiFi.localIP();
   // Store the IP address for later
@@ -105,13 +101,13 @@ void WiFiTask::printWifiStatus() {
   ipAddress[2] = ip[2];
   ipAddress[3] = ip[3];
   // Print your WiFi IP address:
-  Serial.print(", IP Address: ");
-  Serial.println(ip);
+  SP(", IP Address: ");
+  SPL(ip);
   // Print the signal strength:
   long rssi = WiFi.RSSI();
-  Serial.print("Signal Strength (RSSI): ");
-  Serial.print(rssi);
-  Serial.println(" dBm");
+  SP("Signal Strength (RSSI): ");
+  SP(rssi);
+  SPL(" dBm");
 }
 
 // Displays the AP or connected networks IP address on the Nixies
@@ -382,8 +378,8 @@ void WiFiTask::clientServer() {
             CP("<span class='menu-icon'><svg width='16' height='16' viewBox='2 2 16 16' fill='currentColor'><path fill-rule='evenodd' d='M4.5 13.5A.5.5 0 015 13h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 9h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 5h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5z' clip-rule='evenodd'/></svg></span>");
             CP("<span class='menu-text'>Settings</span></a>");
 
-            // Sensors menu [11, 15 & 16]
-            if (setting == 11 || setting == 15 || setting == 16) {
+            // Sensors menu [11, 15, 16 & 29]
+            if (setting == 11 || setting == 15 || setting == 16 || setting == 29) {
               CP("<a class='menu_active' onclick='displaySettings(2)' id='B3'>");
             } else {
               CP("<a class='menu' onclick='displaySettings(2)' id='B3'>");
@@ -495,7 +491,7 @@ void WiFiTask::clientServer() {
 
             CP("</div></div></div></div>");
 
-            // Sensors menu [11, 15, 16,]
+            // Sensors menu [11, 15, 16, 29]
             CP("<div class='divTable'>");
             CP("<div class='divTableBody'>");
             if (setting == 11 || setting == 15 || setting == 16) {
@@ -504,6 +500,13 @@ void WiFiTask::clientServer() {
               CP("<div class='divTableRow' id='M3' style='display:none'>");
             }
             CP("<div class='divTableCell'>");
+
+            // 29 Low Lux Level Threshold
+            CP("<form name='lux' action='29' method='get'><a class='o'>");
+            CP("<span class='btn-icon' onclick='colon.submit()'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm3 12c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3zm-3-5c.343 0 .677.035 1 .101v-3.101h-2v3.101c.323-.066.657-.101 1-.101zm-2.755.832l-2.195-2.196-1.414 1.414 2.195 2.195c.372-.561.853-1.042 1.414-1.413zm-2.245 4.168c0-.343.035-.677.101-1h-3.101v2h3.101c-.066-.323-.101-.657-.101-1zm9.169-2.754l2.195-2.195-1.414-1.415-2.195 2.195c.561.372 1.042.853 1.414 1.415zm.73 1.754c.066.323.101.657.101 1s-.035.677-.101 1h3.101v-2h-3.101zm-2.144 5.168l2.195 2.195 1.414-1.414-2.195-2.195c-.372.562-.853 1.043-1.414 1.414zm-6.924-1.414l-2.195 2.196 1.414 1.414 2.195-2.195c-.561-.372-1.042-.853-1.414-1.415zm4.169 2.246c-.343 0-.677-.035-1-.101v3.101h2v-3.101c-.323.066-.657.101-1 .101z'/></svg></span>");
+            CP("<span class='btn-slide'><input type='range' id='v' name='v' value='" + String(_settings->flashLux) + "' min='1' max='10' oninput='this.nextElementSibling.value = this.value' class='slide'><output>" + String(_settings->flashLux) + "</output></span>");
+            CP("<span class='btn-text' onclick='lux.submit()'>Low Lux Level</span>");
+            CP("</a></form>");
 
             // 11 Display THP
             CP("<a href=\"/11\" class='o'>");
@@ -915,6 +918,9 @@ void WiFiTask::clientServer() {
           _settings->flashLED2 = currentLine.substring(currentLine.indexOf("g=") + 2, currentLine.indexOf("b=") - 1).toInt();
           _settings->flashLED3 = currentLine.substring(currentLine.indexOf("b=") + 2, currentLine.lastIndexOf(' ')).toInt();
           setting = 28;
+        } else if (currentLine.startsWith("GET /29")) {      // Set the Low Lux Level
+          _settings->flashLux = currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')).toInt();
+          setting = 29;
         }
       }
     }
@@ -976,7 +982,7 @@ void WiFiTask::clientServer() {
         break;
       case 26: // Change WiFi
         _settings->rwSettings(26, 1);
-        Serial.println("[DEBUG] Got the new WiFi credentials, saving to flash and restarting WiFi");
+        SPL("[DEBUG] Got the new WiFi credentials, saving to flash and restarting WiFi");
         // Stop the current AP SSID
         WiFi.disconnect();
         connectWiFi();
@@ -992,22 +998,23 @@ void WiFiTask::clientServer() {
         _settings->rwSettings(28, 1);
         _fade->setSwitchLEDBrightness();
         break;
+      case 29: // Set the Low Lux Level
+        _settings->rwSettings(29, 1);
+        break;
     }
   }
 }
 
 // Start the access point
 void WiFiTask::startAP() {
-  Serial.print("Creating access point named: ");
-  Serial.println(ssid_ap);
+  SP("Creating access point named: ");
+  SPL(ssid_ap);
 
   // Create network
   int status = WiFi.beginAP(ssid_ap, pass_ap);
   if (status != WL_AP_LISTENING) {
-    Serial.println("Creating access point failed");
-    apStatus = 0;
+    SPL("Creating access point failed");
   } else {
-    apStatus = 1;
     _settings->debug(12);
     serverBegin();
     _settings->debug(14);

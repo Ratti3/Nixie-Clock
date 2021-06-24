@@ -22,9 +22,7 @@ class WiFiTask {
     void clientServer();
     void apServer();
     void startAP();
-
     bool WiFiFail = 0;                             // Holds state of WiFi connection
-    bool apStatus;
   private: 
     void printWifiStatus();
     
@@ -39,8 +37,8 @@ class WiFiTask {
 
     String urlDecode(const String& text);
 
-    const char* ssid_ap = WIFI_AP_SSID;                  // Your network AP SSID
-    const char* pass_ap = WIFI_AP_PASS;                  // Your network password
+    const char* ssid_ap = WIFI_AP_SSID;            // Stores the AP SSID from Secrets.h
+    const char* pass_ap = WIFI_AP_PASS;            // Stores the AP SSID Password from Secrets.h
 
     byte ipAddress[4];
 };

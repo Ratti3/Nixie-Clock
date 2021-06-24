@@ -2,6 +2,7 @@
 #define Settings_h
 
 #include "Arduino.h"
+#include "Globals.h"
 
 #include "Secrets.h"                   // This file holds the AP WiFi name and password
 
@@ -21,9 +22,7 @@ typedef struct {bool valid; char flash_SSID[50]; char flash_PASS[50];} savedWiFi
 typedef struct {bool validBrightness; byte flashBrightness;} savedBrightness;
 typedef struct {bool validNTP; bool flashNTP;} savedNTP;
 typedef struct {bool validNTPPool; byte flashNTPPool;} savedNTPPool;
-
 typedef struct {bool validOnOffHour; byte flashOnHour; byte flashOffHour;} savedOnOffHour;
-
 typedef struct {bool validPIR; bool flashPIR;} savedPIR;
 typedef struct {bool validLight; bool flashLight;} savedLight;
 typedef struct {bool validUSB; bool flashUSB;} savedUSB;
@@ -31,10 +30,9 @@ typedef struct {bool validFont; byte flashFont;} savedFont;
 typedef struct {bool validBackground; byte flashBackground;} savedBackground;
 typedef struct {bool validUTCOffset; int flashUTCOffset;} savedUTCOffset;
 typedef struct {bool validColon; byte flashColon;} savedColon;
-typedef struct {bool validLED1; byte flashLED1;} savedLED1;
-typedef struct {bool validLED2; byte flashLED2;} savedLED2;
-typedef struct {bool validLED3; byte flashLED3;} savedLED3;
+typedef struct {bool validLED; byte flashLED1; byte flashLED2; byte flashLED3;} savedLED;
 typedef struct {bool validSpin; byte flashSpin;} savedSpin;
+typedef struct {bool validLux; byte flashLux;} savedLux;
 
 class Settings {
   public:
@@ -42,53 +40,53 @@ class Settings {
 
     // Changeable global variables
     
-    const unsigned long eventTime_Time = 100;          // Event time for time functions
-    const unsigned long eventTime_Light = 1000;        // Event time for light functions
-    const unsigned long eventTime_PIR = 2000;          // Event time for PIR functions
-    const unsigned long eventTime_Server = 2000;       // Event time for Server functions
+    const unsigned long eventTime_Time = 100;                 // Event time for time functions
+    const unsigned long eventTime_Light = 3000;               // Event time for light functions
+    const unsigned long eventTime_PIR = 2000;                 // Event time for PIR functions
+    const unsigned long eventTime_Server = 2000;              // Event time for Server functions
 
-    unsigned long previousTime_Time = 0;               // Event start time for time functions
-    unsigned long previousTime_Light = 10;             // Event start time for light functions
-    unsigned long previousTime_PIR = 20;               // Event start time for PIR functions
-    unsigned long previousTime_Server = 30;            // Event start time for Server functions
+    unsigned long previousTime_Time = 0;                      // Event start time for time functions
+    unsigned long previousTime_Light = 11;                    // Event start time for light functions
+    unsigned long previousTime_PIR = 22;                      // Event start time for PIR functions
+    unsigned long previousTime_Server = 35;                   // Event start time for Server functions
 
-    const char* webTitle = "Arduino Nano 33 IoT Nixie Clock";
-    const char* webName = "Living Room";
-    const char* webFont = "Audiowide";
+    const char* webTitle = "Arduino Nano 33 IoT Nixie Clock"; //
+    const char* webName = "Living Room";                      //
+    const char* webFont = "Audiowide";                        //
 
     // Global variables
 
-    unsigned long currentTime;                         // Used by millis
+    unsigned long currentTime;                                // Used by millis
 
-    bool I2C_CODE[3];                                  // Hold success status of I2C devices
-    byte hour, minute, second;                         // Store RTC data
-    byte day, month, year;                             // Store RTC data
-
-    String flash_SSID;
-    String flash_PASS;
+    bool I2C_CODE[3];                                         // Hold success status of I2C devices
+    byte hour, minute, second;                                // Store RTC data
+    byte day, month, year;                                    // Store RTC data
 
     // Flash EEPROM initial save values
-    byte flashBrightness = 255;                        // PWM HV5530 brightness level 1 - 255 (Note: 0 would turn off the Nixies but leave the HV on)
-    bool flashNTP = 1;                                 // Enable/Disable NTP
-    byte flashNTPPool = 3;                             // Stores the NTP pool address (1 = africa, 2 = asia, 3 = europe, 4 = north america, 5 = oceania, 6 = south america)
+    String flash_SSID;                                        // Store the SSID retrieved from the WebUI
+    String flash_PASS;                                        // Store the Password retrieved from the WebUI
+    byte flashBrightness = 255;                               // PWM HV5530 brightness level 1 - 255 (Note: 0 would turn off the Nixies but leave the HV on)
+    bool flashNTP = 1;                                        // Enable/Disable NTP
+    byte flashNTPPool = 3;                                    // Stores the NTP pool address (1 = africa, 2 = asia, 3 = europe, 4 = north america, 5 = oceania, 6 = south america)
     byte flashOnHour = 6;
     byte flashOffHour = 23;
-    bool flashPIR = 1;                                 // Enable/Disable PIR
-    bool flashLight = 1;                               // Enable/Disable Light Sensor
-    bool flashUSB = 1;                                 // Set power supply mode, setting to 1 enables the 5v to 12v booster for the HV5530
-    byte flashFont = 1;                                // The WebUI font
-    byte flashBackground = 4;                          // The WebUI background
-    int flashUTCOffset = 1;                            // UTC offset in hours
-    byte flashColon = 255;                             // Colon LED Brightness via PWM
-    byte flashLED1 = 200;                              // Switch 1 LED Brightness via PWM
-    byte flashLED2 = 90;                               // Switch 2 LED Brightness via PWM
-    byte flashLED3 = 128;                              // Switch 3 LED Brightness via PWM
-    byte flashSpin = 1;                                // Nixie Hourly Spin Cycles
+    bool flashPIR = 1;                                        // Enable/Disable PIR
+    bool flashLight = 1;                                      // Enable/Disable Light Sensor
+    bool flashUSB = 1;                                        // Set power supply mode, setting to 1 enables the 5v to 12v booster for the HV5530
+    byte flashFont = 1;                                       // The WebUI font
+    byte flashBackground = 4;                                 // The WebUI background
+    int flashUTCOffset = 1;                                   // UTC offset in hours
+    byte flashColon = 15;                                     // Colon LED Brightness via PWM
+    byte flashLED1 = 180;                                     // Switch 1 LED Brightness via PWM
+    byte flashLED2 = 30;                                      // Switch 2 LED Brightness via PWM
+    byte flashLED3 = 170;                                     // Switch 3 LED Brightness via PWM
+    byte flashSpin = 1;                                       // Nixie Hourly Spin Cycles
+    byte flashLux = 1;                                        // Low Lux Level Threshold
 
-    const char* ntpServerName = "europe.pool.ntp.org"; // Stores the NTP pool to query, changed via flashNTPPool
+    const char* ntpServerName = "europe.pool.ntp.org";        // Stores the NTP pool to query, changed via flashNTPPool
     
-    const char* ssid;
-    const char* pass;
+    const char* ssid;                                         // Hold the SSID
+    const char* pass;                                         // Hold the SSID Password
 
     bool noSSID = 0;
 

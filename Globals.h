@@ -1,6 +1,14 @@
 #ifndef Globals_h
 #define Globals_h
 
+// Shorten serial print
+#define SP(x) (Serial.print(x));
+#define SPL(x) (Serial.println(x));
+
+// Shorten client print
+#define CP(x) (client.print(x));
+#define CPL(x) (client.println(x));
+
 typedef enum State {
   Run,
   SetHour,

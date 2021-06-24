@@ -19,10 +19,10 @@ void TimeTask::task() {
     s = _settings->second;
   }
 
-//Serial.print(h);
-//Serial.print(m);
-//Serial.print(s);
-//Serial.println(" ");
+//SP(h);
+//SP(m);
+//SP(s);
+//SPL(" ");
 
 
 /*
