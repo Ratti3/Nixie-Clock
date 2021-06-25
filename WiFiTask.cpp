@@ -328,6 +328,9 @@ void WiFiTask::clientServer() {
             CP(".menu_active {color: #306108; font-size: 16px; border-radius: 5px; border: 1px #268a16 solid; background: linear-gradient(180deg, #77d42a 5%, #5cb811 100%); text-shadow: 1px 1px 1px #aade7c; box-shadow: inset 1px 1px 2px 0px #c9efab; cursor: pointer; display: inline-flex; align-items: center;}");
             CP(".menu_active:hover {color: #004d00; background: linear-gradient(180deg, #5cb811 5%, #77d42a 100%);}");
 
+            CP(".float{position: fixed;  width: 80px; height: 80px; bottom: 40px; right: 40px; background-color: #f0cb11; color: #c92200; border-radius: 50px; box-shadow: 2px 2px 3px #999;}");
+            CP(".floater{margin: 22px 25px;}");
+
             CP("</style>");
 
             CP("</head>");
@@ -357,6 +360,8 @@ void WiFiTask::clientServer() {
             CP("  }");
             CP("}");
             CP("</script>");
+
+            CP("<a href='./' class='float'><svg width='32' height='32' viewBox='0 0 24 24' class='floater' fill='currentColor'><path d='M21 13v10h-6v-6h-6v6h-6v-10h-3l12-12 12 12h-3zm-1-5.907v-5.093h-3v2.093l3 3z'/></svg></a>");
 
             CP("<div><h1>" + String(_settings->webTitle) + " : " + String(_settings->webName) + "</h1><h3>Firmware Version : " + String(_settings->fwVersion) + "</h3>");
 
@@ -405,8 +410,8 @@ void WiFiTask::clientServer() {
             CP("<span class='menu-icon'><svg width='16' height='16' viewBox='2 2 16 16' fill='currentColor'><path fill-rule='evenodd' d='M4.5 13.5A.5.5 0 015 13h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 9h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 5h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5z' clip-rule='evenodd'/></svg></span>");
             CP("<span class='menu-text'>Power</span></a>");
 
-            // UI menu [24 & 25]
-            if (setting == 24 || setting == 25) {
+            // UI menu [24, 25 & 30]
+            if (setting == 24 || setting == 25 || setting == 30) {
               CP("<a class='menu_active' onclick='displaySettings(5)' id='B6'>");
             } else {
               CP("<a class='menu' onclick='displaySettings(5)' id='B6'>");
@@ -721,10 +726,10 @@ void WiFiTask::clientServer() {
 
             CP("</div></div></div></div>");
 
-            // UI menu [24 & 25]
+            // UI menu [24, 25 & 30]
             CP("<div class='divTable'>");
             CP("<div class='divTableBody'>");
-            if (setting == 24 || setting == 25) {
+            if (setting == 24 || setting == 25 || setting == 30) {
               CP("<div class='divTableRow' id='M6' style='display:block'>");
             } else {
               CP("<div class='divTableRow' id='M6' style='display:none'>");
@@ -772,6 +777,15 @@ void WiFiTask::clientServer() {
             CP("</select>");
             CP("</span>");
             CP("<span class='btn-text' onclick='changefont.submit()'>Change Font</span>");
+            CP("</a></form>");
+
+            // 30 Change WebUI Title
+            CP("<form name='changename' action='30' method='get'><a class='o'>");
+            CP("<span class='btn-icon' onclick='changename.submit()'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M4 22h-4v-4h4v4zm0-12h-4v4h4v-4zm0-8h-4v4h4v-4zm3 0v4h17v-4h-17zm0 12h17v-4h-17v4zm0 8h17v-4h-17v4z'/></svg></span>");
+            CP("<span class='btn-slide'>");
+            CP("<input type='text' id='titl' name='titl' size='25' maxlength='40' value='" + String(_settings->webTitle) + "'>");
+            CP("<input type='text' id='name' name='name' size='25' maxlength='25' value='" + String(_settings->webName) + "'></span>");
+            CP("<span class='btn-text' onclick='changename.submit()'>Change Name</span>");
             CP("</a></form>");
 
             CP("</div><div class='divTableCell'>");
@@ -921,6 +935,10 @@ void WiFiTask::clientServer() {
         } else if (currentLine.startsWith("GET /29")) {      // Set the Low Lux Level
           _settings->flashLux = currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')).toInt();
           setting = 29;
+        } else if (currentLine.startsWith("GET /30")) {      // Change the WebUI Title
+          _settings->flashTitle = urlDecode(currentLine.substring(13, currentLine.indexOf('&'))); 
+          _settings->flashName = urlDecode(currentLine.substring(currentLine.lastIndexOf('=') + 1, currentLine.lastIndexOf(' ')));
+          setting = 30;
         }
       }
     }
@@ -1000,6 +1018,10 @@ void WiFiTask::clientServer() {
         break;
       case 29: // Set the Low Lux Level
         _settings->rwSettings(29, 1);
+        break;
+      case 30: // Change the WebUI Title
+      CPL(_settings->flashName);
+        _settings->rwSettings(30, 1);
         break;
     }
   }

@@ -33,6 +33,7 @@ typedef struct {bool validColon; byte flashColon;} savedColon;
 typedef struct {bool validLED; byte flashLED1; byte flashLED2; byte flashLED3;} savedLED;
 typedef struct {bool validSpin; byte flashSpin;} savedSpin;
 typedef struct {bool validLux; byte flashLux;} savedLux;
+typedef struct {bool validName; char flashTitle[50]; char flashName[50];} savedName;
 
 class Settings {
   public:
@@ -50,9 +51,9 @@ class Settings {
     unsigned long previousTime_PIR = 22;                      // Event start time for PIR functions
     unsigned long previousTime_Server = 35;                   // Event start time for Server functions
 
-    const char* webTitle = "Arduino Nano 33 IoT Nixie Clock"; //
-    const char* webName = "Living Room";                      //
-    const char* webFont = "Audiowide";                        //
+    const char* webTitle = "Arduino Nano 33 IoT Nixie Clock"; // WebUI Header Title First Part
+    const char* webName = "Living Room";                      // WebUI Header Title Second Part / Room Name
+    const char* webFont = "Audiowide";                        // WebUI Initial Font
 
     // Global variables
 
@@ -65,6 +66,8 @@ class Settings {
     // Flash EEPROM initial save values
     String flash_SSID;                                        // Store the SSID retrieved from the WebUI
     String flash_PASS;                                        // Store the Password retrieved from the WebUI
+    String flashTitle;                                        // Store the WebUI Title retrieved from the WebUI
+    String flashName;                                         // Store the WebUI Name retrieved from the WebUI
     byte flashBrightness = 255;                               // PWM HV5530 brightness level 1 - 255 (Note: 0 would turn off the Nixies but leave the HV on)
     bool flashNTP = 1;                                        // Enable/Disable NTP
     byte flashNTPPool = 3;                                    // Stores the NTP pool address (1 = africa, 2 = asia, 3 = europe, 4 = north america, 5 = oceania, 6 = south america)

@@ -15,6 +15,7 @@ FlashStorage(fsColon, savedColon);            // Stores Colon LED PWM value
 FlashStorage(fsLED, savedLED);                // Stores Switch LED1-3 PWM value
 FlashStorage(fsSpin, savedSpin);              // Stores Nixie Hourly Spin Cycles
 FlashStorage(fsLux, savedLux);                // Stores the low Lux level threshold value
+FlashStorage(fsName, savedName);              // Stores the WebUI Titles
 
 Settings::Settings() {}
 
@@ -22,7 +23,7 @@ Settings::Settings() {}
 void Settings::begin() {
   rwSettings(10, 0);
   rwSettings(13, 0);
-  for (byte i = 15; i <= 29; i++) {
+  for (byte i = 15; i <= 30; i++) {
     rwSettings(i, 0);
   }
 }
@@ -328,6 +329,26 @@ void Settings::rwSettings(byte setting, bool save) {
           SPL(flashLux);
         } else {
           SPL("No flashLux Value!");
+        }
+      }
+      break;
+    case 30: // Change WebUI Title
+      savedName savedname;
+      savedname = fsName.read();
+      if (save) {
+        flashTitle.toCharArray(savedname.flashTitle, 50);
+        flashName.toCharArray(savedname.flashName, 50);
+        savedname.validName = true;
+        fsName.write(savedname);
+        SPL("[DEBUG] WebUI title has been saved");
+          webTitle = savedname.flashTitle;
+          webName = savedname.flashName;
+      } else {
+        if (savedname.validName) {
+          webTitle = savedname.flashTitle;
+          webName = savedname.flashName;
+        } else {
+          SPL("No WebUI Title Data Found");
         }
       }
       break;
