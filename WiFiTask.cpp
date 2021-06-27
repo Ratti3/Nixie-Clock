@@ -285,7 +285,7 @@ void WiFiTask::clientServer() {
             CP(".b {color: #ffffff; border: 1px #84bcf3 solid; background: linear-gradient(180deg, #79bcff 5%, #378ee5 100%); text-shadow: 1px 1px 1px #528fcc; box-shadow: inset 1px 1px 2px 0px #bbdaf7;}");
             CP(".p {color: #ffffff; border: 1px #a946f5 solid; background: linear-gradient(180deg, #c579ff 5%, #a341ee 100%); text-shadow: 1px 1px 1px #8628ce; box-shadow: inset 1px 1px 2px 0px #e6cafc;}");
             CP(".s {color: #777777; border: 1px #dcdcdc solid; background: linear-gradient(180deg, #ededed 5%, #dfdfdf 100%); text-shadow: 1px 1px 1px #ffffff; box-shadow: inset 1px 1px 2px 0px #ffffff;}");
-            CP(".o:hover {color: #8B0000; background: linear-gradient(180deg, #f2ab1e 5%, #f0cb11 100%);}");
+            CP(".o:hover, .float:hover {color: #8B0000; background: linear-gradient(180deg, #f2ab1e 5%, #f0cb11 100%);}");
             CP(".r:hover {color: #dddddd; background: linear-gradient(180deg, #ce0000 5%, #fe1900 100%);}");
             CP(".g:hover {color: #004d00; background: linear-gradient(180deg, #5cb811 5%, #77d42a 100%);}");
             CP(".b:hover {color: #dddddd; background: linear-gradient(180deg, #378ee5 5%, #79bcff 100%);}");
@@ -328,8 +328,8 @@ void WiFiTask::clientServer() {
             CP(".menu_active {color: #306108; font-size: 16px; border-radius: 5px; border: 1px #268a16 solid; background: linear-gradient(180deg, #77d42a 5%, #5cb811 100%); text-shadow: 1px 1px 1px #aade7c; box-shadow: inset 1px 1px 2px 0px #c9efab; cursor: pointer; display: inline-flex; align-items: center;}");
             CP(".menu_active:hover {color: #004d00; background: linear-gradient(180deg, #5cb811 5%, #77d42a 100%);}");
 
-            CP(".float{position: fixed;  width: 80px; height: 80px; bottom: 40px; right: 40px; background-color: #f0cb11; color: #c92200; border-radius: 50px; box-shadow: 2px 2px 3px #999;}");
-            CP(".floater{margin: 22px 25px;}");
+            CP(".float {position: fixed;  width: 80px; height: 80px; bottom: 40px; right: 40px; background-color: #f0cb11; color: #c92200; border-radius: 50px; box-shadow: 2px 2px 3px #999;}");
+            CP(".floater {margin: 17px;}");
 
             CP("</style>");
 
@@ -361,7 +361,7 @@ void WiFiTask::clientServer() {
             CP("}");
             CP("</script>");
 
-            CP("<a href='./' class='float'><svg width='32' height='32' viewBox='0 0 24 24' class='floater' fill='currentColor'><path d='M21 13v10h-6v-6h-6v6h-6v-10h-3l12-12 12 12h-3zm-1-5.907v-5.093h-3v2.093l3 3z'/></svg></a>");
+            CP("<a href='./' class='float'><svg class='floater' width='44' height='44' viewBox='0 0 24 24' fill='currentColor'><path d='M13.5 2c-5.629 0-10.212 4.436-10.475 10h-3.025l4.537 5.917 4.463-5.917h-2.975c.26-3.902 3.508-7 7.475-7 4.136 0 7.5 3.364 7.5 7.5s-3.364 7.5-7.5 7.5c-2.381 0-4.502-1.119-5.876-2.854l-1.847 2.449c1.919 2.088 4.664 3.405 7.723 3.405 5.798 0 10.5-4.702 10.5-10.5s-4.702-10.5-10.5-10.5z'/></svg></a>");
 
             CP("<div><h1>" + String(_settings->webTitle) + " : " + String(_settings->webName) + "</h1><h3>Firmware Version : " + String(_settings->fwVersion) + "</h3>");
 
@@ -459,14 +459,15 @@ void WiFiTask::clientServer() {
             CP("</a></form>");
 
             // 14 Enable/Disable display
-            CP("<form name='displayon' action='14' method='get'><a class='g' onclick='displayon.submit()'>");
-            CP("<span class='btn-icon'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M19 6.734c0 4.164-3.75 6.98-3.75 10.266h-1.992c.001-2.079.996-3.826 1.968-5.513.913-1.585 1.774-3.083 1.774-4.753 0-3.108-2.518-4.734-5.004-4.734-2.482 0-4.996 1.626-4.996 4.734 0 1.67.861 3.168 1.774 4.753.972 1.687 1.966 3.434 1.967 5.513h-1.991c0-3.286-3.75-6.103-3.75-10.266 0-4.343 3.498-6.734 6.996-6.734 3.502 0 7.004 2.394 7.004 6.734zm-4 11.766c0 .276-.224.5-.5.5h-5c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h5c.276 0 .5.224.5.5zm0 2c0 .276-.224.5-.5.5h-5c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h5c.276 0 .5.224.5.5zm-1.701 3.159c-.19.216-.465.341-.752.341h-1.094c-.287 0-.562-.125-.752-.341l-1.451-1.659h5.5l-1.451 1.659zm-3.629-16.347l-1.188-.153c.259-1.995 1.5-3.473 3.518-3.847l.219 1.177c-1.947.361-2.433 1.924-2.549 2.823z'/></svg></span>");
-            CP("<span class='btn-text'>Enable Display</span>");
-            CP("</a></form>");
-
-            CP("<form name='displayoff' action='14' method='get'><a class='r' onclick='displayoff.submit()'>");
-            CP("<span class='btn-icon'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M10.741 17h-1.991c0-.17-.016-.338-.035-.506l1.703-1.548c.197.653.323 1.332.323 2.054zm-.04 6.659c.19.216.465.341.753.341h1.093c.288 0 .562-.125.752-.341l1.451-1.659h-5.5l1.451 1.659zm3.799-3.659h-5c-.276 0-.5.224-.5.5s.224.5.5.5h5c.276 0 .5-.224.5-.5s-.224-.5-.5-.5zm0-2h-5c-.276 0-.5.224-.5.5s.224.5.5.5h5c.276 0 .5-.224.5-.5s-.224-.5-.5-.5zm1.707-8.315c-1.104 2.28-2.948 4.483-2.949 7.315h1.992c0-3.169 3.479-5.906 3.726-9.832l-2.769 2.517zm6.793-8.201l-20.654 18.75-1.346-1.5 6.333-5.728c-1.062-1.873-2.333-3.843-2.333-6.272 0-4.343 3.498-6.734 6.996-6.734 2.408 0 4.798 1.146 6.064 3.267l3.598-3.267 1.342 1.484zm-14.147 10.142l7.676-6.969c-.833-1.742-2.682-2.657-4.533-2.657-2.483 0-4.996 1.626-4.996 4.734 0 1.713.907 3.246 1.853 4.892z'/></svg></span>");
-            CP("<span class='btn-text'>Disable Display</span>");
+            if (_hv->isOn()) {
+              CP("<a href=\"/14\" class='r'>");
+              CP("<span class='btn-icon'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M19 6.734c0 4.164-3.75 6.98-3.75 10.266h-1.992c.001-2.079.996-3.826 1.968-5.513.913-1.585 1.774-3.083 1.774-4.753 0-3.108-2.518-4.734-5.004-4.734-2.482 0-4.996 1.626-4.996 4.734 0 1.67.861 3.168 1.774 4.753.972 1.687 1.966 3.434 1.967 5.513h-1.991c0-3.286-3.75-6.103-3.75-10.266 0-4.343 3.498-6.734 6.996-6.734 3.502 0 7.004 2.394 7.004 6.734zm-4 11.766c0 .276-.224.5-.5.5h-5c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h5c.276 0 .5.224.5.5zm0 2c0 .276-.224.5-.5.5h-5c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h5c.276 0 .5.224.5.5zm-1.701 3.159c-.19.216-.465.341-.752.341h-1.094c-.287 0-.562-.125-.752-.341l-1.451-1.659h5.5l-1.451 1.659zm-3.629-16.347l-1.188-.153c.259-1.995 1.5-3.473 3.518-3.847l.219 1.177c-1.947.361-2.433 1.924-2.549 2.823z'/></svg></span>");
+              CP("<span class='btn-text'>Disable Display</span>");
+            } else {
+              CP("<a href=\"/14\" class='g'>");
+              CP("<span class='btn-icon'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M10.741 17h-1.991c0-.17-.016-.338-.035-.506l1.703-1.548c.197.653.323 1.332.323 2.054zm-.04 6.659c.19.216.465.341.753.341h1.093c.288 0 .562-.125.752-.341l1.451-1.659h-5.5l1.451 1.659zm3.799-3.659h-5c-.276 0-.5.224-.5.5s.224.5.5.5h5c.276 0 .5-.224.5-.5s-.224-.5-.5-.5zm0-2h-5c-.276 0-.5.224-.5.5s.224.5.5.5h5c.276 0 .5-.224.5-.5s-.224-.5-.5-.5zm1.707-8.315c-1.104 2.28-2.948 4.483-2.949 7.315h1.992c0-3.169 3.479-5.906 3.726-9.832l-2.769 2.517zm6.793-8.201l-20.654 18.75-1.346-1.5 6.333-5.728c-1.062-1.873-2.333-3.843-2.333-6.272 0-4.343 3.498-6.734 6.996-6.734 2.408 0 4.798 1.146 6.064 3.267l3.598-3.267 1.342 1.484zm-14.147 10.142l7.676-6.969c-.833-1.742-2.682-2.657-4.533-2.657-2.483 0-4.996 1.626-4.996 4.734 0 1.713.907 3.246 1.853 4.892z'/></svg></span>");
+              CP("<span class='btn-text'>Enable Display</span>");
+            }
             CP("</a></form>");
 
             // 27 Colon LED brightness
@@ -526,26 +527,24 @@ void WiFiTask::clientServer() {
               CP("<a href=\"/15\" class='r'>");
               CP("<span class='btn-icon'><svg width='66' height='66' fill-rule='evenodd' clip-rule='evenodd' viewBox='0 0 24 24' fill='currentColor'><path d='M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12-12-5.377-12-12 5.377-12 12-12zm0 2c5.52 0 10 4.481 10 10 0 5.52-4.48 10-10 10-5.519 0-10-4.48-10-10 0-5.519 4.481-10 10-10zm-2 2.252v1.038c-2.89.862-5 3.542-5 6.71 0 3.863 3.137 7 7 7 1.932 0 3.682-.784 4.949-2.051l.706.706c-1.448 1.449-3.448 2.345-5.655 2.345-4.416 0-8-3.585-8-8 0-3.725 2.551-6.859 6-7.748zm0 3.165v1.119c-1.195.692-2 1.984-2 3.464 0 2.208 1.792 4 4 4 1.104 0 2.104-.448 2.828-1.172l.707.707c-.905.904-2.155 1.465-3.535 1.465-2.76 0-5-2.24-5-5 0-2.049 1.235-3.811 3-4.583zm1 2.851v-6.268c0-.265.105-.52.293-.707.187-.188.442-.293.707-.293.265 0 .52.105.707.293.188.187.293.442.293.707v6.268c.598.346 1 .992 1 1.732 0 1.104-.896 2-2 2s-2-.896-2-2c0-.74.402-1.386 1-1.732z'/></svg></span>");
               CP("<span class='btn-text'>Disable PIR</span>");
-              CP("</a>");
             } else {
               CP("<a href=\"/15\" class='g'>");
               CP("<span class='btn-icon'><svg width='66' height='66' fill-rule='evenodd' clip-rule='evenodd' viewBox='0 0 24 24' fill='currentColor'><path d='M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12-12-5.377-12-12 5.377-12 12-12zm0 2c5.52 0 10 4.481 10 10 0 5.52-4.48 10-10 10-5.519 0-10-4.48-10-10 0-5.519 4.481-10 10-10zm-2 2.252v1.038c-2.89.862-5 3.542-5 6.71 0 3.863 3.137 7 7 7 1.932 0 3.682-.784 4.949-2.051l.706.706c-1.448 1.449-3.448 2.345-5.655 2.345-4.416 0-8-3.585-8-8 0-3.725 2.551-6.859 6-7.748zm0 3.165v1.119c-1.195.692-2 1.984-2 3.464 0 2.208 1.792 4 4 4 1.104 0 2.104-.448 2.828-1.172l.707.707c-.905.904-2.155 1.465-3.535 1.465-2.76 0-5-2.24-5-5 0-2.049 1.235-3.811 3-4.583zm1 2.851v-6.268c0-.265.105-.52.293-.707.187-.188.442-.293.707-.293.265 0 .52.105.707.293.188.187.293.442.293.707v6.268c.598.346 1 .992 1 1.732 0 1.104-.896 2-2 2s-2-.896-2-2c0-.74.402-1.386 1-1.732z'/></svg></span>");
               CP("<span class='btn-text'>Enable PIR</span>");
-              CP("</a>");
             }
-
+              CP("</a>");
+              
             // 16 Toggle Light Sensor
             if (_settings->flashLight) {
               CP("<a href=\"/16\" class='r'>");
               CP("<span class='btn-icon'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M16.169 14.754l2.195 2.195-1.414 1.414-2.195-2.195c.561-.371 1.042-.852 1.414-1.414zm3.831-3.754h-3.101c.066.323.101.657.101 1s-.035.677-.101 1h3.101v-2zm-7 5.899c-.323.066-.657.101-1 .101s-.677-.035-1-.101v3.101h2v-3.101zm9.055-11.437l-1.457 1.457c.884 1.491 1.402 3.225 1.402 5.081 0 5.514-4.486 10-10 10-1.856 0-3.59-.518-5.081-1.402l-1.457 1.457c1.882 1.226 4.125 1.945 6.538 1.945 6.627 0 12-5.373 12-12 0-2.414-.72-4.656-1.945-6.538zm1.945-4.048l-22.586 22.586-1.414-1.414 2.854-2.854c-1.772-2.088-2.854-4.779-2.854-7.732 0-6.627 5.373-12 12-12 2.953 0 5.644 1.082 7.732 2.853l2.854-2.853 1.414 1.414zm-19.733 16.905l5.03-5.03c-.189-.39-.297-.826-.297-1.289 0-1.657 1.343-3 3-3 .463 0 .899.108 1.289.297l5.03-5.03c-1.724-1.413-3.922-2.267-6.319-2.267-5.514 0-10 4.486-10 10 0 2.397.854 4.595 2.267 6.319zm8.733-11.218v-3.101h-2v3.101c.323-.066.657-.101 1-.101s.677.035 1 .101zm-9 3.899v2h3.101c-.066-.323-.101-.657-.101-1s.035-.677.101-1h-3.101zm3.05-5.364l-1.414 1.414 2.195 2.195c.372-.562.853-1.042 1.414-1.414l-2.195-2.195z'/></svg></span>");
               CP("<span class='btn-text'>Disable Light Sensor</span>");
-              CP("</a>");
             } else {
               CP("<a href=\"/16\" class='g'>");
               CP("<span class='btn-icon'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm3 12c0 1.657-1.343 3-3 3s-3-1.343-3-3 1.343-3 3-3 3 1.343 3 3zm-3-5c.343 0 .677.035 1 .101v-3.101h-2v3.101c.323-.066.657-.101 1-.101zm-2.755.832l-2.195-2.196-1.414 1.414 2.195 2.195c.372-.561.853-1.042 1.414-1.413zm-2.245 4.168c0-.343.035-.677.101-1h-3.101v2h3.101c-.066-.323-.101-.657-.101-1zm9.169-2.754l2.195-2.195-1.414-1.415-2.195 2.195c.561.372 1.042.853 1.414 1.415zm.73 1.754c.066.323.101.657.101 1s-.035.677-.101 1h3.101v-2h-3.101zm-2.144 5.168l2.195 2.195 1.414-1.414-2.195-2.195c-.372.562-.853 1.043-1.414 1.414zm-6.924-1.414l-2.195 2.196 1.414 1.414 2.195-2.195c-.561-.372-1.042-.853-1.414-1.415zm4.169 2.246c-.343 0-.677-.035-1-.101v3.101h2v-3.101c-.323.066-.657.101-1 .101z'/></svg></span>");
               CP("<span class='btn-text'>Enable Light Sensor</span>");
-              CP("</a>");
             }
+              CP("</a>");
 
             CP("</div></div></div></div>");
 
@@ -649,16 +648,15 @@ void WiFiTask::clientServer() {
 
             // 13 Toggle NTP Sync
             if (_settings->flashNTP) {
-              CP("<a href=\"/13\" class='g'>");
-              CP("<span class='btn-icon'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M23 12c0 1.042-.154 2.045-.425 3h-2.101c.335-.94.526-1.947.526-3 0-4.962-4.037-9-9-9-1.706 0-3.296.484-4.654 1.314l1.857 2.686h-6.994l2.152-7 1.85 2.673c1.683-1.049 3.658-1.673 5.789-1.673 6.074 0 11 4.925 11 11zm-6.354 7.692c-1.357.826-2.944 1.308-4.646 1.308-4.963 0-9-4.038-9-9 0-1.053.191-2.06.525-3h-2.1c-.271.955-.425 1.958-.425 3 0 6.075 4.925 11 11 11 2.127 0 4.099-.621 5.78-1.667l1.853 2.667 2.152-6.989h-6.994l1.855 2.681zm-3.646-7.692v-6h-2v8h7v-2h-5z'/></svg></span>");
-              CP("<span class='btn-text'>Enable NTP</span>");
-              CP("</a>");
-            } else {
               CP("<a href=\"/13\" class='r'>");
               CP("<span class='btn-icon'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M23 12c0 1.042-.154 2.045-.425 3h-2.101c.335-.94.526-1.947.526-3 0-4.962-4.037-9-9-9-1.706 0-3.296.484-4.654 1.314l1.857 2.686h-6.994l2.152-7 1.85 2.673c1.683-1.049 3.658-1.673 5.789-1.673 6.074 0 11 4.925 11 11zm-6.354 7.692c-1.357.826-2.944 1.308-4.646 1.308-4.963 0-9-4.038-9-9 0-1.053.191-2.06.525-3h-2.1c-.271.955-.425 1.958-.425 3 0 6.075 4.925 11 11 11 2.127 0 4.099-.621 5.78-1.667l1.853 2.667 2.152-6.989h-6.994l1.855 2.681zm-.646-5.108l-2.592-2.594 2.592-2.587-1.416-1.403-2.591 2.589-2.588-2.589-1.405 1.405 2.593 2.598-2.593 2.592 1.405 1.405 2.601-2.596 2.591 2.596 1.403-1.416z'/></svg></span>");
               CP("<span class='btn-text'>Disable NTP</span>");
-              CP("</a>");
+            } else {
+              CP("<a href=\"/13\" class='g'>");
+              CP("<span class='btn-icon'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M23 12c0 1.042-.154 2.045-.425 3h-2.101c.335-.94.526-1.947.526-3 0-4.962-4.037-9-9-9-1.706 0-3.296.484-4.654 1.314l1.857 2.686h-6.994l2.152-7 1.85 2.673c1.683-1.049 3.658-1.673 5.789-1.673 6.074 0 11 4.925 11 11zm-6.354 7.692c-1.357.826-2.944 1.308-4.646 1.308-4.963 0-9-4.038-9-9 0-1.053.191-2.06.525-3h-2.1c-.271.955-.425 1.958-.425 3 0 6.075 4.925 11 11 11 2.127 0 4.099-.621 5.78-1.667l1.853 2.667 2.152-6.989h-6.994l1.855 2.681zm-3.646-7.692v-6h-2v8h7v-2h-5z'/></svg></span>");
+              CP("<span class='btn-text'>Enable NTP</span>");
             }
+              CP("</a>");
 
             // 21 Set Date
             CP("<form name='setdate' action='21' method='get'><a class='o'>");
@@ -715,14 +713,13 @@ void WiFiTask::clientServer() {
             if (_settings->flashUSB) {
               CP("<a href=\"/17\" class='p'>");
               CP("<span class='btn-icon'><svg width='66' height='66' viewBox='0 0 20 20' fill='currentColor'><path d='M0 14v1.498c0 .277.225.502.502.502h.997A.502.502 0 0 0 2 15.498V14c0-.959.801-2.273 2-2.779V9.116C1.684 9.652 0 11.97 0 14zm12.065-9.299l-2.53 1.898c-.347.26-.769.401-1.203.401H6.005C5.45 7 5 7.45 5 8.005v3.991C5 12.55 5.45 13 6.005 13h2.327c.434 0 .856.141 1.203.401l2.531 1.898a3.502 3.502 0 0 0 2.102.701H16V4h-1.832c-.758 0-1.496.246-2.103.701zM17 6v2h3V6h-3zm0 8h3v-2h-3v2z'/></svg></span>");
-              CP("<span class='btn-text'>12V DC Power</span>");
-              CP("</a>");
+              CP("<span class='btn-text'>Run on 12V DC Power</span>");
             } else {
-              CP("<a href=\"/17\" class='p'>");
+              CP("<a href=\"/17\" class='r'>");
               CP("<span class='btn-icon'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M18.67,8.67H18V3a1,1,0,0,0-1-1H7A1,1,0,0,0,6,3V8.67H5.33a1,1,0,0,0-1,1v6.54A2.8,2.8,0,0,0,7.13,19H9v2a1,1,0,0,0,1,1h4a1,1,0,0,0,1-1V19h1.88a2.8,2.8,0,0,0,2.79-2.79V9.67A1,1,0,0,0,18.67,8.67ZM8,4h8V8.67H8Zm5,16H11V19h2Zm4.67-3.79a.8.8,0,0,1-.79.79H7.13a.8.8,0,0,1-.8-.79V10.67H17.67Z'/><rect width='1' height='1' x='10' y='6'/><rect width='1' height='1' x='13' y='6'/></svg></span>");
-              CP("<span class='btn-text'>5V USB Power</span>");
-              CP("</a>");
+              CP("<span class='btn-text'>Run on 5V USB Power</span>");
             }
+              CP("</a>");
 
             CP("</div></div></div></div>");
 
@@ -783,8 +780,8 @@ void WiFiTask::clientServer() {
             CP("<form name='changename' action='30' method='get'><a class='o'>");
             CP("<span class='btn-icon' onclick='changename.submit()'><svg width='66' height='66' viewBox='0 0 24 24' fill='currentColor'><path d='M4 22h-4v-4h4v4zm0-12h-4v4h4v-4zm0-8h-4v4h4v-4zm3 0v4h17v-4h-17zm0 12h17v-4h-17v4zm0 8h17v-4h-17v4z'/></svg></span>");
             CP("<span class='btn-slide'>");
-            CP("<input type='text' id='titl' name='titl' size='25' maxlength='40' value='" + String(_settings->webTitle) + "'>");
-            CP("<input type='text' id='name' name='name' size='25' maxlength='25' value='" + String(_settings->webName) + "'></span>");
+            CP("<input type='text' id='titl' name='titl' size='30' maxlength='40' value='" + String(_settings->webTitle) + "'>");
+            CP("<input type='text' id='name' name='name' size='30' maxlength='25' value='" + String(_settings->webName) + "'></span>");
             CP("<span class='btn-text' onclick='changename.submit()'>Change Name</span>");
             CP("</a></form>");
 
@@ -887,7 +884,13 @@ void WiFiTask::clientServer() {
           setting = 16;
         } else if (currentLine.startsWith("GET /17")) {      // Switch between 5V and 12V
           if (i < 1) {
-            _settings->flashUSB = !_settings->flashUSB;
+            if (_settings->flashUSB) {
+              _hv->switch12VOn();
+              _settings->flashUSB = 0;
+            } else {
+              _hv->switch12VOff();
+              _settings->flashUSB = 1;
+            }
             i++;
           }
           setting = 17;
@@ -944,9 +947,10 @@ void WiFiTask::clientServer() {
     }
     client.stop();
 
-    // Run functions if a button was pressed
+    // Run functions if a WebUI button was pressed
     switch (setting) {
-      case 10: // Slot machine
+      case 10: // Save number of hourly spins and run slot machine
+        _settings->rwSettings(10, 1);
         _nixie->runSlotMachine(_settings->flashSpin);
         break;
       case 11: // Run BME280
@@ -956,11 +960,10 @@ void WiFiTask::clientServer() {
         getNTP();
         break;
       case 13: // Enable/Disable NTP
-        i = 0;
         _settings->rwSettings(13, 1);
         break;
       case 14: // Enable/Disable Display
-        _hv->switchOff();
+        // No save action required
         break;
       case 15: // Enable/Disable PIR
         _settings->rwSettings(15, 1);
@@ -969,6 +972,7 @@ void WiFiTask::clientServer() {
         _settings->rwSettings(16, 1);
         break;
       case 17: // Switch between 5V and 12V
+        
         _settings->rwSettings(17, 1);
         break;
       case 18: // Set brightness

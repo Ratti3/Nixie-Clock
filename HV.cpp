@@ -7,10 +7,8 @@ void HV::begin(bool USBpower) {
   pinMode(PIN_SHDN, OUTPUT);
   if (USBpower) {
     digitalWrite(PIN_SHDN, HIGH);
-    _12von = true;
   } else {
     digitalWrite(PIN_SHDN, LOW);
-    _12von = false;
   }
 
   // HV Booster Module Enable
@@ -34,17 +32,10 @@ void HV::switchOff() {
   _hvon = false;
 }
 
-// Store the state of the 12V on/off logic
-bool HV::is12VOn() {
-  return _12von;
-}
-
 void HV::switch12VOn() {
   digitalWrite(PIN_SHDN, HIGH);
-  _12von = true;
 }
 
 void HV::switch12VOff() {
   digitalWrite(PIN_SHDN, LOW);
-  _12von = false;
 }

@@ -5,10 +5,11 @@
 #include "Globals.h"
 #include "Settings.h"
 #include "NixieDisplay.h"
+#include "HV.h"
 
 class I2C {
   public:
-    I2C(NixieDisplay* nixie, RTC_DS3231* rtc, Adafruit_BME280* bme, Adafruit_VEML7700* veml, Settings* settings);
+    I2C(NixieDisplay* nixie, RTC_DS3231* rtc, Adafruit_BME280* bme, Adafruit_VEML7700* veml, Settings* settings, HV* hv);
     void rtcBegin();
     void bmeBegin();
     void vemlBegin();
@@ -25,8 +26,9 @@ class I2C {
     Adafruit_BME280* _bme;
     Adafruit_VEML7700* _veml;
     Settings* _settings;
+    HV* _hv;
     int pirState = LOW;
-    int val = 0;
+    int motion = 0;
 };
 
 #endif
