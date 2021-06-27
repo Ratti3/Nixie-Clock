@@ -5,10 +5,13 @@ HV::HV() {}
 void HV::begin(bool USBpower) {
   // 12V DC Booster Module Enable
   pinMode(PIN_SHDN, OUTPUT);
+  SP("Turning 5 to 12V Booster ");
   if (USBpower) {
     digitalWrite(PIN_SHDN, HIGH);
+    SPL("On");
   } else {
     digitalWrite(PIN_SHDN, LOW);
+    SPL("Off");
   }
 
   // HV Booster Module Enable
@@ -34,8 +37,10 @@ void HV::switchOff() {
 
 void HV::switch12VOn() {
   digitalWrite(PIN_SHDN, HIGH);
+  SPL("Turning 5 to 12V Booster On");
 }
 
 void HV::switch12VOff() {
   digitalWrite(PIN_SHDN, LOW);
+  SPL("Turning 5 to 12V Booster Off");
 }

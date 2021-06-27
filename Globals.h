@@ -11,6 +11,9 @@
 
 typedef enum State {
   Run,
+  SetDay,
+  SetMonth,
+  SetYear,
   SetHour,
   SetMinute,
   SetSecond
@@ -36,9 +39,9 @@ typedef enum State {
 
 #define PIN_PIR A0        // Logic input for PIR Sensor
 
-// #define PIN_SW1 4      // Menu button PINs
-// #define PIN_SW2 7
-// #define PIN_SW3 8
+#define PIN_SW1 4         // Menu button PINs
+#define PIN_SW2 7
+#define PIN_SW3 8
 #define PIN_SW1_LED1 5    // Menu button PWM LED control PINs
 #define PIN_SW2_LED2 6
 #define PIN_SW3_LED3 9
