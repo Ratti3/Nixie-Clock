@@ -15,6 +15,8 @@
 #include <Adafruit_Sensor.h>           // v1.1.4  Required by BME280 - https://github.com/adafruit/Adafruit_Sensor
 #include <Adafruit_BME280.h>           // v2.1.4  BME280 Environmental Sensor Library - https://github.com/adafruit/Adafruit_BME280_Library
 #include <Adafruit_VEML7700.h>         // v1.1.1  VEML7700 Light Sensor Library - https://github.com/adafruit/Adafruit_VEML7700
+#include <AceButton.h>
+
 
 // Create a structures to store the WiFi credentials and all other settings into flash
 // NOTE: This is lost when a new skecth is uploaded
