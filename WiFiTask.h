@@ -10,6 +10,7 @@
 #include "Secrets.h"
 #include "Fade.h"
 #include "HV.h"
+#include "Buttons.h"
 
 class WiFiTask {
   public:

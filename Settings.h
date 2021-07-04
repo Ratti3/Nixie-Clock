@@ -15,8 +15,9 @@
 #include <Adafruit_Sensor.h>           // v1.1.4  Required by BME280 - https://github.com/adafruit/Adafruit_Sensor
 #include <Adafruit_BME280.h>           // v2.1.4  BME280 Environmental Sensor Library - https://github.com/adafruit/Adafruit_BME280_Library
 #include <Adafruit_VEML7700.h>         // v1.1.1  VEML7700 Light Sensor Library - https://github.com/adafruit/Adafruit_VEML7700
-#include <AceButton.h>
+#include <AceButton.h>                 // v1.9.0  Button library - https://github.com/bxparks/AceButton
 
+using namespace ace_button;
 
 // Create a structures to store the WiFi credentials and all other settings into flash
 // NOTE: This is lost when a new skecth is uploaded
@@ -56,6 +57,8 @@ class Settings {
     const char* webTitle = "Arduino Nano 33 IoT Nixie Clock"; // WebUI Header Title First Part
     const char* webName = "Living Room";                      // WebUI Header Title Second Part / Room Name
     const char* webFont = "Audiowide";                        // WebUI Initial Font
+
+    const int longpressduration = 5000;                       // Time in ms for button long press duration
 
     // Global variables
 

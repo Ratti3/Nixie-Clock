@@ -1,36 +1,20 @@
 #include "Buttons.h"
 
-Buttons::Buttons(I2C* i2c, TimeTask* timetask, Settings* settings, AceButton* button) {
+Buttons::Buttons(I2C* i2c, TimeTask* timetask, Settings* settings) {
   _i2c = i2c;
   _timetask = timetask;
   _settings = settings;
-  _button = button;
   _state = Run;
 }
 
 void Buttons::begin() {
-  
   pinMode(PIN_SW1, INPUT_PULLUP);
   pinMode(PIN_SW2, INPUT_PULLUP);
   pinMode(PIN_SW3, INPUT_PULLUP);
-
-  ButtonConfig* buttonConfig = _button->getButtonConfig();
-  buttonConfig->setEventHandler(handleEvent);
-  buttonConfig->setFeature(ButtonConfig::kFeatureDoubleClick);
-  buttonConfig->setFeature(ButtonConfig::kFeatureSuppressClickBeforeDoubleClick);
-  buttonConfig->setFeature(ButtonConfig::kFeatureSuppressAfterClick);
-  buttonConfig->setFeature(ButtonConfig::kFeatureSuppressAfterDoubleClick);
-  buttonConfig->setFeature(ButtonConfig::kFeatureLongPress);
-  buttonConfig->setFeature(ButtonConfig::kFeatureSuppressAfterLongPress);
-  buttonConfig->setLongPressDelay(5000);
 }
 
-void Buttons::task() {
-  bool sw1 = debounce(digitalRead(PIN_SW1) == LOW, &sw1db);
-  bool sw2 = debounce(digitalRead(PIN_SW2) == LOW, &sw2db);
-  bool sw3 = debounce(digitalRead(PIN_SW3) == LOW, &sw2db);
-  
-  if (sw1) {
+void Buttons::task(byte sw) {
+  if (sw) {
     if(_state == Run) {
       _state = SetDay;
     } else if (_state == SetDay) {
@@ -49,7 +33,7 @@ void Buttons::task() {
     _timetask->setState(_state);
   }
   
-  if (sw2 && _state != Run) {
+  if (sw && _state != Run) {
 
     int h = 88;
     int m = 88;
@@ -70,7 +54,7 @@ void Buttons::task() {
       } else {
         hour++;
       }
-      _i2c->adjustDateTime(3);
+//      _i2c->adjustDateTime(3);
 //      _settings->year, _settings->month, _settings->day, _settings->hour, _settings->minute, _settings->second
 //      _rtc->adjust(DateTime(now.year(), now.month(), now.day(), hour, now.minute(), now.second()));
     } else if (_state == SetMinute) {
@@ -93,37 +77,4 @@ void Buttons::task() {
     _timetask->task();
   }
 
-}
-
-boolean Buttons::debounce(boolean value, boolean* store) {
-  if(value) {
-    if(*store) {
-      value = false;
-    } else {
-      *store = true;
-    }
-  } else {
-    *store = false;
-  }
-  return value;
-}
-
-// The event handler for the button.
-void Buttons::handleEvent(AceButton* /* button */, uint8_t eventType, uint8_t /* buttonState */) {
-  switch (eventType) {
-    case AceButton::kEventLongReleased:
-      SPL("Long");
-      break;
-    case AceButton::kEventClicked:
-      SPL("Click");
-      break;
-    case AceButton::kEventReleased:
-      //digitalWrite(LED_PIN, LED_ON);
-      SPL("On");
-      break;
-    case AceButton::kEventDoubleClicked:
-      //digitalWrite(LED_PIN, LED_OFF);
-      SPL("Off");
-      break;
-  }
 }
