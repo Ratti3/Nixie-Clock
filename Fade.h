@@ -13,6 +13,7 @@ class Fade {
     void fadeOut();
     void setBrightness();
     void setSwitchLEDBrightness();
+    void switchLEDFlash(byte LED);
   private:
     Settings* _settings;
 };

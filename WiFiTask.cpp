@@ -78,7 +78,7 @@ void WiFiTask::getNTP() {
   _fade->fadeOut();
   delay(5);
   if (_timeclient->getEpochTime() > 100000) {
-    _i2c->adjustTime(_timeclient->getEpochTime());
+    _i2c->adjustEpoch(_timeclient->getEpochTime());
     SP(" with UNIX Time: ");
     SPL(_timeclient->getEpochTime());
   } else {

@@ -26,7 +26,6 @@ class WiFiTask {
     bool WiFiFail = 0;                             // Holds state of WiFi connection
   private: 
     void printWifiStatus();
-    
     NixieDisplay* _nixie;
     TimeTask* _timetask;
     I2C* _i2c;

@@ -7,9 +7,10 @@ TimeTask::TimeTask(NixieDisplay* nixie, I2C* i2c, Settings* settings) {
 }
 
 void TimeTask::task() {
-  int h = 88;
-  int m = 88;
-  int s = 88;
+  // Set a default value for time if RTC not available
+  int h = 0;
+  int m = 0;
+  int s = 0;
 
   // Get current time from DS3231 RTC chip
   if (!_settings->I2C_CODE[0]) {
@@ -46,29 +47,24 @@ void TimeTask::task() {
   }
  */
 
-  // Enable and disable the right segments
-  _nixie->disableSegments(hourTens, 10);
-  _nixie->disableSegments(hourUnits, 10);
-  _nixie->disableSegments(minuteTens, 10);
-  _nixie->disableSegments(minuteUnits, 10);
-  _nixie->disableSegments(secondTens, 10);
-  _nixie->disableSegments(secondUnits, 10);
-  
-  if(!(_state == SetHour && s % 2 == 0)) {
+  // Blank the display
+  Blank();
+  // Enable and disable the right segments  
+  if(_state == SetHour || _state == Run) {
     _nixie->enableSegment(hourTens[(h / 10) % 10]);
     _nixie->enableSegment(hourUnits[h % 10]);
   }
-  if(!(_state == SetMinute && s % 2 == 0)) {
+  if(_state == SetMinute || _state == Run) {
     _nixie->enableSegment(minuteTens[(m / 10) % 10]);
     _nixie->enableSegment(minuteUnits[m % 10]);
   }
-  if(!(_state == SetSecond && s % 2 == 0)) {
+  if(_state == SetSecond || _state == Run) {
     _nixie->enableSegment(secondTens[(s / 10) % 10]);
     _nixie->enableSegment(secondUnits[s % 10]);
   }
 
   // Flash the dots once per second
-  if (s % 2 == 0) {
+  if (s % 2 == 0 && _state == Run) {
     analogWrite(PIN_COLON, 0);
   } else {
     analogWrite(PIN_COLON, _settings->flashColon);
@@ -78,15 +74,19 @@ void TimeTask::task() {
   _nixie->updateDisplay();
 
   // Once a minute, run the slot machine effect to prevent cathode poisoning
-  if (s == 0) {
+  if (s == 0  && _state == Run) {
     _nixie->runSlotMachine(_settings->flashSpin);
+  }
+
+  if (_state == SetDay || _state == SetMonth || _state == SetYear) {
+    showDate();
   }
 }
 
 void TimeTask::showDate() {
-  int d = 88;
-  int m = 88;
-  int y = 88;
+  int d = 30;
+  int m = 7;
+  int y = 21;
 
   // Get current date from DS3231 RTC chip
   if (!_settings->I2C_CODE[0]) {
@@ -95,25 +95,37 @@ void TimeTask::showDate() {
     m = _settings->month;
     y = _settings->year;
   }
-
+  // Blank the display
+  Blank();
   // Enable and disable the right segments
+  if(_state == SetDay || _state == Run) {
+    _nixie->enableSegment(hourTens[(d / 10) % 10]);
+    _nixie->enableSegment(hourUnits[d % 10]);
+  }
+  if(_state == SetMonth || _state == Run) {
+    _nixie->enableSegment(minuteTens[(m / 10) % 10]);
+    _nixie->enableSegment(minuteUnits[m % 10]);
+  }
+  if(_state == SetYear || _state == Run) {
+    _nixie->enableSegment(secondTens[(y / 10) % 10]);
+    _nixie->enableSegment(secondUnits[y % 10]);
+  }
+
+  // Write to display
+  _nixie->updateDisplay();
+  if (_state == Run) {
+    delay(3000);
+  }
+}
+
+// Blanks the display
+void TimeTask::Blank() {
   _nixie->disableSegments(hourTens, 10);
   _nixie->disableSegments(hourUnits, 10);
   _nixie->disableSegments(minuteTens, 10);
   _nixie->disableSegments(minuteUnits, 10);
   _nixie->disableSegments(secondTens, 10);
   _nixie->disableSegments(secondUnits, 10);
-
-  _nixie->enableSegment(hourTens[(d / 10) % 10]);
-  _nixie->enableSegment(hourUnits[d % 10]);
-  _nixie->enableSegment(minuteTens[(m / 10) % 10]);
-  _nixie->enableSegment(minuteUnits[m % 10]);
-  _nixie->enableSegment(secondTens[(y / 10) % 10]);
-  _nixie->enableSegment(secondUnits[y % 10]);
-
-  // Write to display
-  _nixie->updateDisplay();
-  delay(3000);
 }
 
 void TimeTask::setState(State state) {

@@ -14,6 +14,7 @@ class TimeTask {
     void showDate();
     void setState(State state);
   private: 
+    void Blank();
     NixieDisplay* _nixie;
     I2C* _i2c;
     Settings* _settings;

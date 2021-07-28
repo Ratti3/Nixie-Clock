@@ -216,18 +216,18 @@ void I2C::readDate() {
 }
 
 // Adjust DS3231 date and time using epoch
-void I2C::adjustTime(unsigned long epoch) {
+void I2C::adjustEpoch(unsigned long epoch) {
   _rtc->adjust(DateTime(epoch));
-  SP("Setting DS3231 Date and Time");
+  SP("Setting DS3231 Date and Time using EPOCH");
 }
 
 // Adjust DS3231 date/time using user input values
-void I2C::adjustDateTime(bool dt) {
-  if (dt) { // If dt is true, then only set date with the data from the WebUI
+void I2C::adjustDateTime(byte dt) {
+  if (dt == 1) { // If dt = 1, then only set date
     readTime();
-  } else {  // If dt is false, then only set time with the data from the WebUI
+  } else if (dt == 2) {  // If dt = 2, then only set time
     readDate();
   }
   _rtc->adjust(DateTime(_settings->year, _settings->month, _settings->day, _settings->hour, _settings->minute, _settings->second));
-  SPL("Setting date/time manually via WebUI");
+  SPL("Setting date/time manually updated");
 }

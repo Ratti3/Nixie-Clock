@@ -1,7 +1,8 @@
 #include "Buttons.h"
 
-Buttons::Buttons(I2C* i2c, TimeTask* timetask, Settings* settings) {
+Buttons::Buttons(I2C* i2c, Fade* fade, TimeTask* timetask, Settings* settings) {
   _i2c = i2c;
+  _fade = fade;
   _timetask = timetask;
   _settings = settings;
   _state = Run;
@@ -14,7 +15,7 @@ void Buttons::begin() {
 }
 
 void Buttons::task(byte sw) {
-  if (sw) {
+  if (sw == 1) {
     if(_state == Run) {
       _state = SetDay;
     } else if (_state == SetDay) {
@@ -33,48 +34,157 @@ void Buttons::task(byte sw) {
     _timetask->setState(_state);
   }
   
-  if (sw && _state != Run) {
+  if (sw == 2 && _state != Run) {
 
-    int h = 88;
-    int m = 88;
-    int s = 88;
-  
-    // Get current time from DS3231 RTC chip
+    // Hold the date and time for adjusting
+    int d = 0;
+    int m = 0;
+    int y = 0;
+    int h = 0;
+    int mn = 0;
+    int s = 0;
+
+    // Get current time and date from DS3231 RTC
     if (!_settings->I2C_CODE[0]) {
+      _i2c->readDate();
       _i2c->readTime();
+      d = _settings->day;
+      m = _settings->month;
+      y = _settings->year;
       h = _settings->hour;
-      m = _settings->minute;
+      mn = _settings->minute;
       s = _settings->second;
     }
-
     if (_state == SetHour) {
-      int hour = h;
-      if (hour == 23) {
-        hour = 0;
+      if (h == 23) {
+        h = 0;
       } else {
-        hour++;
+        h++;
       }
-//      _i2c->adjustDateTime(3);
-//      _settings->year, _settings->month, _settings->day, _settings->hour, _settings->minute, _settings->second
-//      _rtc->adjust(DateTime(now.year(), now.month(), now.day(), hour, now.minute(), now.second()));
     } else if (_state == SetMinute) {
-      int minute = m;
-      if(minute == 59) {
-        minute = 0;
+      if(mn == 59) {
+        mn = 0;
       } else {
-        minute++;
+        mn++;
       }
-//      _rtc->adjust(DateTime(now.year(), now.month(), now.day(), now.hour(), minute, now.second()));
     } else if (_state == SetSecond) {
-      int second = s;
-      if(second == 59) {
-        second = 0;
+      if(s == 59) {
+        s = 0;
       } else {
-        second++;
+        s++;
       }
-//      _rtc->adjust(DateTime(now.year(), now.month(), now.day(), now.hour(), now.minute(), second));
+    } else if (_state == SetDay) {
+      if(d == 31) {
+        d = 1;
+      } else {
+        d++;
+      }
+    } else if (_state == SetMonth) {
+      if(m == 12) {
+        m = 1;
+      } else {
+        m++;
+      }
+    } else if (_state == SetYear) {
+      if(y == 99) {
+        y = 20;
+      } else {
+        y++;
+      }
     }
-    _timetask->task();
+    // Store the adjusted date and time
+    if (!_settings->I2C_CODE[0]) {
+      _settings->day = d;
+      _settings->month = m;
+      _settings->year = y;
+      _settings->hour = h;
+      _settings->minute = mn;
+      _settings->second = s;
+    }
+    // Save date and time
+    _i2c->adjustDateTime(3);
+    _fade->switchLEDFlash(1);
+  }
+
+  if (sw == 3 && _state != Run) {
+
+    // Hold the date and time for adjusting
+    byte d = 0;
+    byte m = 0;
+    byte y = 0;
+    byte h = 0;
+    byte mn = 0;
+    byte s = 0;
+
+    // Get current time and date from DS3231 RTC
+    if (!_settings->I2C_CODE[0]) {
+      _i2c->readDate();
+      _i2c->readTime();
+      d = _settings->day;
+      m = _settings->month;
+      y = _settings->year;
+      h = _settings->hour;
+      mn = _settings->minute;
+      s = _settings->second;
+    }
+    if (_state == SetHour) {
+      if (h == 1) {
+        h = 23;
+      } else {
+        h--;
+      }
+    } else if (_state == SetMinute) {
+      if(mn == 0) {
+        mn = 59;
+      } else {
+        mn--;
+      }
+    } else if (_state == SetSecond) {
+      if(s == 0) {
+        s = 59;
+      } else {
+        s--;
+      }
+    } else if (_state == SetDay) {
+      if(d == 1) {
+        d = 31;
+      } else {
+        d--;
+      }
+    } else if (_state == SetMonth) {
+      if(m == 1) {
+        m = 12;
+      } else {
+        m--;
+      }
+    } else if (_state == SetYear) {
+      if(y == 20) {
+        y = 99;
+      } else {
+        y--;
+      }
+    }
+    // Store the adjusted date and time
+    if (!_settings->I2C_CODE[0]) {
+      _settings->day = d;
+      _settings->month = m;
+      _settings->year = y;
+      _settings->hour = h;
+      _settings->minute = mn;
+      _settings->second = s;
+    }
+    // Save date and time
+    _i2c->adjustDateTime(3);
+    _fade->switchLEDFlash(1);
+  }
+
+  // Show THP
+  if (sw == 2 && _state == Run) {
+    _i2c->displayTHP();
+  }
+  // Show date
+  if (sw == 3 && _state == Run) {
+    _timetask->showDate();
   }
 
 }

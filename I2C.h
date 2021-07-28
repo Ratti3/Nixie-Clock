@@ -15,8 +15,8 @@ class I2C {
     void vemlBegin();
     void readTime();
     void readDate();
-    void adjustTime(unsigned long epoch);
-    void adjustDateTime(bool dt);
+    void adjustEpoch(unsigned long epoch);
+    void adjustDateTime(byte dt);
     void displayTHP();
     void readLight();
     void PIR();
