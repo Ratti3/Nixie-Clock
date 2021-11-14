@@ -256,8 +256,8 @@ void Settings::rwSettings(byte setting, bool save) {
       savedwifi = fsWiFi.read();
     
       if (save) {
-        flash_SSID.toCharArray(savedwifi.flash_SSID, 50);
-        flash_PASS.toCharArray(savedwifi.flash_PASS, 50);
+        flash_SSID.toCharArray(savedwifi.flash_SSID, 100);
+        flash_PASS.toCharArray(savedwifi.flash_PASS, 100);
         savedwifi.valid = true;
         fsWiFi.write(savedwifi);
         SPL("[DEBUG] WiFi credentials have been saved");

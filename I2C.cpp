@@ -49,29 +49,22 @@ void I2C::vemlBegin() {
 
 void I2C::displayTHP() {
 
-  int t[2];
+  int t;
   int h;
   int p;
 
   _bme->takeForcedMeasurement();
 
-  t[0] = _bme->readTemperature();
-  t[1] = _bme->readTemperature();
+  t = _bme->readTemperature() * 100;
   h = _bme->readHumidity();
   p = _bme->readPressure() / 100.0F;
 
-  // Display the IP Address
   // Enable and disable the right segments
-  _nixie->disableSegments(hourTens, 10);
-  _nixie->disableSegments(hourUnits, 10);
-  _nixie->disableSegments(minuteTens, 10);
-  _nixie->disableSegments(minuteUnits, 10);
-  _nixie->disableSegments(secondTens, 10);
-  _nixie->disableSegments(secondUnits, 10);
+  _nixie->disableAllSegments();
 
-  _nixie->enableSegment(hourTens[t[0]/10]);
-  _nixie->enableSegment(hourUnits[t[0]%10]);
-  _nixie->enableSegment(minuteTens[t[1]/10]);
+  _nixie->enableSegment(hourTens[t/1000]);
+  _nixie->enableSegment(hourUnits[(t%100)/100]);
+  _nixie->enableSegment(minuteTens[(t%100)/10]);
 
   // Write to display
   _nixie->updateDisplay();
@@ -212,7 +205,7 @@ void I2C::readDate() {
   DateTime now = _rtc->now();
   _settings->day = now.day();
   _settings->month = now.month();
-  _settings->year = now.year();
+  _settings->year = now.year() % 100;
 }
 
 // Adjust DS3231 date and time using epoch

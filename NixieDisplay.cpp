@@ -85,6 +85,20 @@ void NixieDisplay::updateDisplay() {
   digitalWrite(PIN_HV_LE, HIGH);
 }
 
+// Display FW version
+void NixieDisplay::displayFW() {
+  int fw;
+  fw = (_settings->fwVersion2 * 100);
+
+  disableAllSegments();
+  enableSegment(hourUnits[fw/100]);
+  enableSegment(minuteTens[(fw%100/10)]);
+  enableSegment(minuteUnits[fw%10]);
+
+  updateDisplay();
+  delay(1000);
+}
+
 // Anti cathode poisoning spins
 void NixieDisplay::runSlotMachine(byte c) {
   for (byte r = 0; r < c; ++r) {

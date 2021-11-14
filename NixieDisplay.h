@@ -29,6 +29,7 @@ class NixieDisplay {
     void disableAllSegments();
     void updateDisplay();
     void runSlotMachine(byte c);
+    void displayFW();
   private:
     Settings* _settings;
     // Frame of data to be shifted into 64 bit HV shift register
