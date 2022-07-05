@@ -13,8 +13,8 @@ class HV {
     void switchOff();
     void switch12VOn();
     void switch12VOff();
+    bool _hvon = 0;
   private:
-    boolean _hvon = false;
 };
 
 #endif

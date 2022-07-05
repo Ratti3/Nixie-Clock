@@ -27,12 +27,12 @@ bool HV::isOn() {
 
 void HV::switchOn() {
   digitalWrite(PIN_HV_EN, HIGH);
-  _hvon = true;
+  _hvon = 1;
 }
 
 void HV::switchOff() {
   digitalWrite(PIN_HV_EN, LOW);
-  _hvon = false;
+  _hvon = 0;
 }
 
 void HV::switch12VOn() {

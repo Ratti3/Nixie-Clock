@@ -17,7 +17,9 @@ FlashStorage(fsSpin, savedSpin);              // Stores Nixie Hourly Spin Cycles
 FlashStorage(fsLux, savedLux);                // Stores the low Lux level threshold value
 FlashStorage(fsName, savedName);              // Stores the WebUI Titles
 
-Settings::Settings() {}
+Settings::Settings(HV* hv) {
+  _hv = hv;
+}
 
 // Load all saved settings from flash
 void Settings::begin() {
@@ -352,6 +354,20 @@ void Settings::rwSettings(byte setting, bool save) {
         }
       }
       break;
+  }
+}
+
+void Settings::OnOff() {
+  _hv->isOn();
+  if ((hour >= flashOnHour) && (hour < flashOffHour)) {
+    if (!_hv->_hvon) {
+      _hv->switchOn();
+    }
+  }
+  if ((hour >= flashOffHour) && (hour < flashOnHour)) {
+    if (_hv->_hvon) {
+      _hv->switchOff();
+    }
   }
 }
 

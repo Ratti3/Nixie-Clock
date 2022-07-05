@@ -410,14 +410,14 @@ void WiFiTask::clientServer() {
             CP("<span class='menu-icon'><svg width='16' height='16' viewBox='2 2 16 16' fill='currentColor'><path fill-rule='evenodd' d='M4.5 13.5A.5.5 0 015 13h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 9h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 5h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5z' clip-rule='evenodd'/></svg></span>");
             CP("<span class='menu-text'>Power</span></a>");
 
-            // UI menu [24, 25 & 30]
+            // WebUI menu [24, 25 & 30]
             if (setting == 24 || setting == 25 || setting == 30) {
               CP("<a class='menu_active' onclick='displaySettings(5)' id='B6'>");
             } else {
               CP("<a class='menu' onclick='displaySettings(5)' id='B6'>");
             }
             CP("<span class='menu-icon'><svg width='16' height='16' viewBox='2 2 16 16' fill='currentColor'><path fill-rule='evenodd' d='M4.5 13.5A.5.5 0 015 13h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 9h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5zm0-4A.5.5 0 015 5h10a.5.5 0 010 1H5a.5.5 0 01-.5-.5z' clip-rule='evenodd'/></svg></span>");
-            CP("<span class='menu-text'>UI</span></a>");
+            CP("<span class='menu-text'>WebUI</span></a>");
 
             // WiFi menu [26]
             CP("<div class='divTable'>");
