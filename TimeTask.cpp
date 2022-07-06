@@ -1,17 +1,18 @@
 #include "TimeTask.h"
 
-TimeTask::TimeTask(NixieDisplay* nixie, I2C* i2c, Settings* settings) {
+TimeTask::TimeTask(NixieDisplay* nixie, I2C* i2c, Settings* settings, HV* hv) {
   _nixie = nixie;
   _i2c = i2c;
   _settings = settings;
+  _hv = hv;
 }
 
 void TimeTask::task() {
-  // Set a default value for time if RTC not available
+
+  // Set a default value for time if RTC not available (RTC is absolutely necessary to display time)
   int h = 0;
   int m = 0;
   int s = 0;
-
   // Get current time from DS3231 RTC chip
   if (!_settings->I2C_CODE[0]) {
     _i2c->readTime();
@@ -24,7 +25,6 @@ void TimeTask::task() {
 //SP(m);
 //SP(s);
 //SPL(" ");
-
 
 /*
   // DST auto-adjust for Europe
@@ -80,6 +80,26 @@ void TimeTask::task() {
 
   if (_state == SetDay || _state == SetMonth || _state == SetYear) {
     showDate();
+  }
+}
+
+void TimeTask::OnOff() {
+  int h;
+  // Get current hour from DS3231 RTC chip
+  if (!_settings->I2C_CODE[0]) {
+    _i2c->readTime();
+    h = _settings->hour;
+  }
+  _hv->isOn();
+  if ((h >= _settings->flashOnHour) && (h < _settings->flashOffHour)) {
+    if (!_hv->_hvon) {
+      _hv->switchOn();
+    }
+  }
+  if ((h >= _settings->flashOffHour) && (h < _settings->flashOnHour)) {
+    if (_hv->_hvon) {
+      _hv->switchOff();
+    }
   }
 }
 

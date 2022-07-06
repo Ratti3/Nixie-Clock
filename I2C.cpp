@@ -164,13 +164,15 @@ void I2C::readLight() {
   if (_settings->I2C_CODE[2]) {
     return;
   }
+  // Enable/disable HV out
   if (_veml->readLux() < _settings->flashLux) {
-    //digitalWrite(PIN_HV_EN, LOW);
-
-
+    if (_hv->_hvon) {
+      _hv->switchOff();
+    }
   } else {
-    //digitalWrite(PIN_HV_EN, HIGH);
-
+    if (!_hv->_hvon) {
+      _hv->switchOn();
+    }
   }
 }
 
@@ -178,13 +180,11 @@ void I2C::readLight() {
 void I2C::PIR() {
   motion = digitalRead(PIN_PIR);     // Read the PIR Pin Output
   if (motion == HIGH) {
-    digitalWrite(LED_BUILTIN, HIGH); // Turn built in LED ON
     if (pirState == LOW) {
       _hv->switchOn();
       pirState = HIGH;
     }
   } else {
-    digitalWrite(LED_BUILTIN, LOW);  // Turn built in LED OFF
     if (pirState == HIGH) {
       _hv->switchOff();
       pirState = LOW;

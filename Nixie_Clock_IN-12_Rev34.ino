@@ -13,7 +13,7 @@ Adafruit_VEML7700 veml = Adafruit_VEML7700();
 HV hv;
 
 // Variables and settings
-Settings settings(&hv);
+Settings settings;
 
 // HV shift registers
 NixieDisplay nixie(&settings);
@@ -25,7 +25,7 @@ Fade fade(&settings);
 I2C i2c(&nixie, &rtc, &bme, &veml, &settings, &hv);
 
 // Tasks that run periodically
-TimeTask timetask(&nixie, &i2c, &settings);
+TimeTask timetask(&nixie, &i2c, &settings, &hv);
 
 // HTTP Server Port
 WiFiServer server(80);
@@ -172,7 +172,7 @@ void loop() {
   }
   // 
   if (settings.currentTime - settings.previousTime_OnOffHour >= settings.eventTime_OnOffHour) {
-    settings.OnOff();
+    timetask.OnOff();
     settings.previousTime_OnOffHour = settings.currentTime;
   }
   // Check for button presses, no need to use millis or interrupts for accuracy, works fine <4ms and less

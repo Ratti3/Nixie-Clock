@@ -3,7 +3,6 @@
 
 #include "Arduino.h"
 #include "Globals.h"
-#include "HV.h"
 
 #include "Secrets.h"                   // This file holds the AP WiFi name and password
 
@@ -42,7 +41,7 @@ typedef struct {bool validName; char flashTitle[50]; char flashName[50];} savedN
 
 class Settings {
   public:
-    Settings(HV* hv);
+    Settings();
 
     const char* fwVersion = "1.00";                           // Firmware version for display purposes
     float fwVersion2 = 1.00;                                  // Firmware version for display purposes
@@ -52,13 +51,14 @@ class Settings {
     const unsigned long eventTime_Light = 3001;               // Event time for light functions
     const unsigned long eventTime_PIR = 2002;                 // Event time for PIR functions
     const unsigned long eventTime_Server = 2003;              // Event time for Server functions
-    const unsigned long eventTime_OnOffHour = 60004;          //
+    const unsigned long eventTime_OnOffHour = 6000;           // Event time for auto on/off
 
     unsigned long previousTime_Time = 0;                      // Event start time for time functions
     unsigned long previousTime_Light = 0;                     // Event start time for light functions
     unsigned long previousTime_PIR = 0;                       // Event start time for PIR functions
     unsigned long previousTime_Server = 0;                    // Event start time for Server functions
-    unsigned long previousTime_OnOffHour = 0;                 //
+    unsigned long previousTime_OnOffHour = 0;                 // Event start time for auto on/off
+
 
     const char* webTitle = "Arduino Nano 33 IoT Nixie Clock"; // WebUI Header Title First Part
     const char* webName = "Living Room";                      // WebUI Header Title Second Part / Room Name
@@ -108,7 +108,6 @@ class Settings {
     void debug(byte n);
 
   private:
-    HV* _hv;
 };
 
 #endif
